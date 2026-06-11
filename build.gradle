@@ -1,0 +1,570 @@
+/**
+ * It is advised that you do not edit anything in the build.gradle; unless you are sure of what you are doing
+ */
+import com.gtnewhorizons.retrofuturagradle.mcp.InjectTagsTask
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.gradle.ext.Gradle
+
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.3'
+    id 'com.gtnewhorizons.retrofuturagradle' version '2.0.2'
+    id 'com.matthewprenger.cursegradle' version '1.4.0' apply false
+    id 'com.modrinth.minotaur' version '2.+' apply false
+    id 'org.jetbrains.changelog' version '2.5.0'
+}
+
+apply from: 'gradle/scripts/helpers.gradle'
+
+// Early Assertions
+assertProperty 'mod_version'
+assertProperty 'root_package'
+assertProperty 'mod_id'
+assertProperty 'mod_name'
+
+assertSubProperties 'use_tags', 'tag_class_name'
+assertSubProperties 'use_access_transformer', 'access_transformer_locations'
+assertSubProperties 'use_mixins', 'mixin_booter_version', 'mixin_refmap'
+assertSubProperties 'is_coremod', 'coremod_includes_mod', 'coremod_plugin_class_name'
+assertSubProperties 'use_asset_mover', 'asset_mover_version'
+
+setDefaultProperty 'use_modern_java_syntax', false, false
+setDefaultProperty 'generate_sources_jar', true, false
+setDefaultProperty 'generate_javadocs_jar', true, false
+setDefaultProperty 'mapping_channel', true, 'stable'
+setDefaultProperty 'mapping_version', true, '39'
+setDefaultProperty 'use_dependency_at_files', true, true
+setDefaultProperty 'minecraft_username', true, 'Developer'
+setDefaultProperty 'extra_jvm_args', false, ''
+setDefaultProperty 'extra_tweak_classes', false, ''
+setDefaultProperty 'change_minecraft_sources', false, false
+
+version = propertyString('mod_version')
+group = propertyString('root_package')
+
+base {
+    archivesName.set(propertyString('mod_id'))
+}
+
+tasks.decompressDecompiledSources.enabled !propertyBool('change_minecraft_sources')
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(propertyBool('use_modern_java_syntax') ? 16 : 8))
+        // Azul covers the most platforms for Java 8 toolchains, crucially including MacOS arm64
+        vendor.set(JvmVendorSpec.AZUL)
+    }
+    if (propertyBool('generate_sources_jar')) {
+        withSourcesJar()
+    }
+    if (propertyBool('generate_javadocs_jar')) {
+        withJavadocJar()
+    }
+}
+
+configurations {
+    embed
+    implementation.extendsFrom(embed)
+}
+
+minecraft {
+    mcVersion.set('1.12.2')
+
+    mcpMappingChannel.set(propertyString('mapping_channel'))
+    mcpMappingVersion.set(propertyString('mapping_version'))
+
+    useDependencyAccessTransformers.set(propertyBool('use_dependency_at_files'))
+
+    username.set(propertyString('minecraft_username'))
+    
+    // Add any additional tweaker classes here
+    extraTweakClasses.addAll(propertyStringList('extra_tweak_classes'))
+
+    // Add various JVM arguments here for runtime
+    def args = ['-ea:' + group]
+    if (propertyBool('use_mixins')) {
+        args << '-Dmixin.hotSwap=true'
+        args << '-Dmixin.checks.interfaces=true'
+        args << '-Dmixin.debug.export=true'
+    }
+    extraRunJvmArguments.addAll(args)
+    extraRunJvmArguments.addAll(propertyStringList('extra_jvm_args'))
+
+    if (propertyBool('use_tags')) {
+        if (file('tags.properties').exists()) {
+            Properties props = new Properties().tap {  it.load(file('tags.properties').newInputStream()); it }
+            if (!props.isEmpty()) {
+                injectedTags.set(props.collectEntries { k, v -> [(k): interpolate(v)] })
+            }
+        }
+    }
+}
+
+repositories {
+    maven {
+        name 'CleanroomMC Maven'
+        url 'https://maven.cleanroommc.com'
+    }
+}
+
+dependencies {
+    if (propertyBool('use_modern_java_syntax')) {
+        annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
+        // Workaround for https://github.com/bsideup/jabel/issues/174
+        annotationProcessor 'net.java.dev.jna:jna-platform:5.13.0'
+        compileOnly ('com.github.bsideup.jabel:jabel-javac-plugin:1.0.0') {
+            transitive = false
+        }
+        // Allow jdk.unsupported classes like sun.misc.Unsafe, workaround for JDK-8206937 and fixes crashes in tests
+        patchedMinecraft 'me.eigenraven.java8unsupported:java-8-unsupported-shim:1.0.0'
+        // Include for tests
+        testAnnotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
+        testCompileOnly('com.github.bsideup.jabel:jabel-javac-plugin:1.0.0') {
+            transitive = false // We only care about the 1 annotation class
+        }
+    }
+    if (propertyBool('use_asset_mover')) {
+        implementation "com.cleanroommc:assetmover:${propertyString('asset_mover_version')}"
+    }
+    if (propertyBool('use_mixins')) {
+        String mixin = modUtils.enableMixins("zone.rong:mixinbooter:${propertyString('mixin_booter_version')}", propertyString('mixin_refmap'))
+        api (mixin) {
+            transitive = false
+        }
+        annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
+        annotationProcessor 'com.google.guava:guava:32.1.2-jre'
+        annotationProcessor 'com.google.code.gson:gson:2.8.9'
+        annotationProcessor (mixin) {
+            transitive = false
+        }
+    }
+    if (propertyBool('enable_junit_testing')) {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+    implementation project.files("libs/NTM-CE.jar")
+}
+
+apply from: 'gradle/scripts/dependencies.gradle'
+
+// Adds Access Transformer files to tasks
+if (propertyBool('use_access_transformer')) {
+    for (def location : propertyStringList('access_transformer_locations')) {
+        def fileLocation = file("${projectDir}/src/main/resources/${location}")
+        if (fileLocation.exists()) {
+            tasks.deobfuscateMergedJarToSrg.accessTransformerFiles.from(fileLocation)
+            tasks.srgifyBinpatchedJar.accessTransformerFiles.from(fileLocation)
+        } else {
+            throw new GradleException("Access Transformer file [$fileLocation] does not exist!")
+        }
+    }
+}
+
+processResources {
+
+    inputs.property 'mod_id', propertyString('mod_id')
+    inputs.property 'mod_name', propertyString('mod_name')
+    inputs.property 'mod_version', propertyString('mod_version')
+    inputs.property 'mod_description', propertyString('mod_description')
+    inputs.property 'mod_authors', "${propertyStringList('mod_authors', ',').join(', ')}"
+    inputs.property 'mod_credits', propertyString('mod_credits')
+    inputs.property 'mod_url', propertyString('mod_url')
+    inputs.property 'mod_update_json', propertyString('mod_update_json')
+    inputs.property 'mod_logo_path', propertyString('mod_logo_path')
+    inputs.property 'mixin_refmap', propertyString('mixin_refmap')
+    inputs.property 'mixin_package', propertyString('mixin_package')
+    inputs.property 'mixin_configs', propertyStringList('mixin_configs').join(' ')
+
+    def filterList = ['mcmod.info', 'pack.mcmeta']
+    filterList.addAll(propertyStringList('mixin_configs').collect(config -> "mixins.${config}.json" as String))
+
+    filesMatching(filterList) { fcd ->
+        fcd.expand(
+                'mod_id': propertyString('mod_id'),
+                'mod_name': propertyString('mod_name'),
+                'mod_version': propertyString('mod_version'),
+                'mod_description': propertyString('mod_description'),
+                'mod_authors': "${propertyStringList('mod_authors', ',').join(', ')}",
+                'mod_credits': propertyString('mod_credits'),
+                'mod_url': propertyString('mod_url'),
+                'mod_update_json': propertyString('mod_update_json'),
+                'mod_logo_path': propertyString('mod_logo_path'),
+                'mixin_refmap': propertyString('mixin_refmap'),
+                'mixin_package': propertyString('mixin_package')
+        )
+    }
+    
+    if (propertyBool('use_access_transformer')) {
+        rename '(.+_at.cfg)', 'META-INF/$1'
+    }
+
+}
+
+jar {
+    manifest {
+        def attribute_map = [:]
+        if (propertyBool('is_coremod')) {
+            attribute_map['FMLCorePlugin'] = propertyString('coremod_plugin_class_name')
+            if (propertyBool('coremod_includes_mod')) {
+                attribute_map['FMLCorePluginContainsFMLMod'] = true
+                def currentTasks = gradle.startParameter.taskNames
+                if (currentTasks[0] == 'build' || currentTasks[0] == 'prepareObfModsFolder' || currentTasks[0] == 'runObfClient') {
+                    attribute_map['ForceLoadAsMod'] = true
+                }
+            }
+        }
+        if (propertyBool('use_access_transformer')) {
+            attribute_map['FMLAT'] = propertyString('access_transformer_locations')
+        }
+        attributes(attribute_map)
+    }
+    // Add all embedded dependencies into the jar
+    from(provider{ configurations.embed.collect {it.isDirectory() ? it : zipTree(it)} })
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+    project {
+        settings {
+            runConfigurations {
+                "1. Run Client"(Gradle) {
+                    taskNames = ["runClient"]
+                }
+                "2. Run Server"(Gradle) {
+                    taskNames = ["runServer"]
+                }
+                "3. Run Obfuscated Client"(Gradle) {
+                    taskNames = ["runObfClient"]
+                }
+                "4. Run Obfuscated Server"(Gradle) {
+                    taskNames = ["runObfServer"]
+                }
+            }
+            compiler.javac {
+                afterEvaluate {
+                    javacAdditionalOptions = "-encoding utf8"
+                    moduleJavacAdditionalOptions = [
+                            (project.name + ".main"): tasks.compileJava.options.compilerArgs.collect { '"' + it + '"' }.join(' ')
+                    ]
+                }
+            }
+        }
+    }
+}
+
+compileTestJava {
+    sourceCompatibility = targetCompatibility = 8
+}
+
+test {
+    useJUnitPlatform()
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(8)
+    })
+    if (propertyBool('show_testing_output')) {
+        testLogging {
+            showStandardStreams = true
+        }
+    }
+}
+
+String parserChangelog() {
+    if (!file('CHANGELOG.md').exists()) {
+        throw new GradleException('publish_with_changelog is true, but CHANGELOG.md does not exist in the workspace!')
+    }
+    String parsedChangelog = changelog.renderItem(
+            changelog.get(propertyString('mod_version')).withHeader(false).withEmptySections(false),
+            Changelog.OutputType.MARKDOWN)
+    if (parsedChangelog.isEmpty()) {
+        throw new GradleException('publish_with_changelog is true, but the changelog for the latest version is empty!')
+    }
+    return parsedChangelog
+}
+
+tasks.register('generateMixinJson') {
+    group 'cleanroom helpers'
+    def missingConfig = propertyStringList('mixin_configs').findAll(config -> !file("src/main/resources/mixins.${config}.json").exists())
+    onlyIf {
+        if (propertyBool('use_mixins') && propertyBool('generate_mixins_json')) {
+            return !missingConfig.empty
+        }
+        return false
+    }
+    doLast {
+        for (String mixinConfig : missingConfig) {
+            def file = file("src/main/resources/mixins.${mixinConfig}.json")
+            file << """{\n\t"package": "",\n\t"required": true,\n\t"refmap": "${propertyString('mixin_refmap')}",\n\t"target": "@env(DEFAULT)",\n\t"minVersion": "0.8.5",\n\t"compatibilityLevel": "JAVA_8",\n\t"mixins": [],\n\t"server": [],\n\t"client": []\n}"""
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    if (propertyBool('use_modern_java_syntax')) {
+        if (it.name in ['compileMcLauncherJava', 'compilePatchedMcJava']) {
+            return
+        }
+        sourceCompatibility = 17
+        options.release.set(8)
+        javaCompiler.set(javaToolchains.compilerFor {
+            languageVersion.set(JavaLanguageVersion.of(16))
+            vendor.set(JvmVendorSpec.AZUL)
+        })
+    }
+}
+
+tasks.register('cleanroomAfterSync') {
+    group 'cleanroom helpers'
+    dependsOn 'injectTags', 'generateMixinJson'
+}
+
+if (propertyBool('use_modern_java_syntax')) {
+    tasks.withType(Javadoc).configureEach {
+        sourceCompatibility = 17
+    }
+}
+
+tasks.named('injectTags', InjectTagsTask).configure {
+    onlyIf {
+        return propertyBool('use_tags') && !it.getTags().get().isEmpty()
+    }
+    it.outputClassName.set(propertyString('tag_class_name'))
+}
+
+tasks.named('prepareObfModsFolder').configure {
+    finalizedBy 'prioritizeCoremods'
+}
+
+tasks.register('prioritizeCoremods') {
+    dependsOn 'prepareObfModsFolder'
+    doLast {
+        fileTree('run/obfuscated').forEach {
+            if (it.isFile() && it.name =~ '(mixinbooter|configanytime)(-)([0-9])+\\.+([0-9])+(.jar)') {
+                it.renameTo(new File(it.parentFile, "!${it.name}"))
+            }
+        }
+    }
+}
+
+def ntmCeJarFile = file("libs/NTM-CE.jar")
+
+tasks.register("downloadNtmCe") {
+    outputs.file(ntmCeJarFile)
+    outputs.upToDateWhen { false }
+
+    doLast {
+        logger.lifecycle("[downloadNtmCe] Checking latest release, target=${ntmCeJarFile}")
+
+        def ghToken = System.getenv("GITHUB_TOKEN")
+        def apiUrlStr = "https://api.github.com/repos/Warfactory-Offical/Hbm-s-Nuclear-Tech-CE/releases"
+        logger.lifecycle("[downloadNtmCe] Fetching releases: ${apiUrlStr} (token=${ghToken ? "present" : "absent"})")
+
+        HttpURLConnection conn = (HttpURLConnection) new URL(apiUrlStr).openConnection()
+        conn.setRequestProperty("Accept", "application/vnd.github+json")
+        conn.setRequestProperty("User-Agent", "${project.name}-${project.gradle.gradleVersion}")
+        if (ghToken) conn.setRequestProperty("Authorization", "Bearer ${ghToken}")
+        conn.connectTimeout = 15000
+        conn.readTimeout = 30000
+
+        int apiCode = conn.responseCode
+        logger.lifecycle("[downloadNtmCe] GitHub API response=${apiCode}, contentType=${conn.contentType}, length=${conn.contentLengthLong}")
+        logger.lifecycle("[downloadNtmCe] X-RateLimit-Limit=${conn.getHeaderField("X-RateLimit-Limit")}, Remaining=${conn.getHeaderField("X-RateLimit-Remaining")}, Reset=${conn.getHeaderField("X-RateLimit-Reset")}")
+
+        def apiBodyStream = (apiCode >= 200 && apiCode < 300) ? conn.inputStream : conn.errorStream
+        def releases
+        def apiRaw = ""
+        apiBodyStream.withCloseable { is ->
+            apiRaw = is.getText("UTF-8")
+            releases = new groovy.json.JsonSlurper().parseText(apiRaw)
+        }
+        if (!(apiCode >= 200 && apiCode < 300)) {
+            throw new GradleException("[downloadNtmCe] GitHub API error ${apiCode}. Body:\n${apiRaw.take(2000)}")
+        }
+
+        def mainJarPattern = ~/^NTM-CE-1\.12\.2-.*-dev\.jar$/
+        def apiJarPattern  = ~/^NTM-CE-1\.12\.2-.*-api\.jar$/
+
+        def chosenAsset = null
+        def chosenRelease = null
+        def apiOnlyAsset = null
+        def apiOnlyRelease = null
+
+        for (def rel : (releases instanceof List ? releases : [releases])) {
+            if (rel?.draft) continue
+            def assets = rel?.assets instanceof List ? rel.assets : []
+
+            def main = assets.find { ((it?.name ?: "") as String) ==~ mainJarPattern }
+            if (main?.browser_download_url) {
+                chosenAsset = main
+                chosenRelease = rel
+                break
+            }
+
+            def api = assets.find { ((it?.name ?: "") as String) ==~ apiJarPattern }
+            if (api?.browser_download_url && apiOnlyAsset == null) {
+                apiOnlyAsset = api
+                apiOnlyRelease = rel
+            }
+        }
+
+        if (chosenAsset == null) {
+            if (apiOnlyAsset != null) {
+                logger.lifecycle("[downloadNtmCe] Found only API jar (will NOT use it): tag=${apiOnlyRelease?.tag_name}, asset=${apiOnlyAsset?.name}")
+            }
+            throw new GradleException("[downloadNtmCe] Could not find main NTM-CE jar asset (pattern: ${mainJarPattern}).")
+        }
+
+        logger.lifecycle("[downloadNtmCe] Selected release tag=${chosenRelease?.tag_name}, name=${chosenRelease?.name}, prerelease=${chosenRelease?.prerelease}")
+        logger.lifecycle("[downloadNtmCe] Selected asset name=${chosenAsset?.name}, size=${chosenAsset?.size}, url=${chosenAsset?.browser_download_url}")
+
+        def extractRemoteVersion = { def rel, def asset ->
+            def an = (asset?.name ?: "") as String
+            def m1 = (an =~ /^NTM-CE-1\.12\.2-(.+)-dev\.jar$/)
+            if (m1.matches()) return m1[0][1]
+
+            def rn = (rel?.name ?: "") as String
+            def m2 = (rn =~ /(?i)\bNightly Build v([0-9]+(?:\.[0-9]+)*)\b/)
+            if (m2.find()) return m2.group(1)
+
+            return null
+        }
+
+        def extractLocalVersion = { File jarFile ->
+            if (!jarFile.exists()) return null
+            def jar = new java.util.jar.JarFile(jarFile)
+            try {
+                def e = jar.getEntry("mcmod.info")
+                if (e != null) {
+                    def txt = jar.getInputStream(e).getText("UTF-8")
+                    def parsed = new groovy.json.JsonSlurper().parseText(txt)
+
+                    def list =
+                            (parsed instanceof List) ? parsed :
+                                    (parsed?.modList instanceof List) ? parsed.modList :
+                                            [parsed]
+
+                    def ent = list.find { ((it?.modid ?: "") as String) == "hbm" } ?: (list ? list[0] : null)
+                    def v = ((ent?.version ?: "") as String).trim()
+                    if (v && !v.contains("\${")) return v
+                }
+
+                def mf = jar.manifest
+                def v = mf?.mainAttributes?.getValue("Implementation-Version") ?: mf?.mainAttributes?.getValue("Specification-Version")
+                if (v) return ((v as String).trim())
+
+                return null
+            } finally {
+                jar.close()
+            }
+        }
+
+        def remoteVersion = extractRemoteVersion(chosenRelease, chosenAsset)
+        logger.lifecycle("[downloadNtmCe] Remote version parsed=${remoteVersion ?: "UNKNOWN"}")
+
+        if (ntmCeJarFile.exists()) {
+            def localVersion = null
+            try {
+                localVersion = extractLocalVersion(ntmCeJarFile)
+            } catch (Throwable t) {
+                logger.lifecycle("[downloadNtmCe] Local jar exists but failed to read version (${t.class.simpleName}: ${t.message}); will re-download.")
+            }
+
+            logger.lifecycle("[downloadNtmCe] Local version parsed=${localVersion ?: "UNKNOWN"}")
+
+            if (remoteVersion != null && localVersion != null && remoteVersion == localVersion) {
+                logger.lifecycle("[downloadNtmCe] Local jar is already latest (${localVersion}); skipping download.")
+                return
+            }
+            logger.lifecycle("[downloadNtmCe] Local jar is not latest (local=${localVersion}, remote=${remoteVersion}); downloading.")
+        } else {
+            logger.lifecycle("[downloadNtmCe] No local jar; downloading.")
+        }
+
+        def downloadUrlStr = chosenAsset.browser_download_url as String
+
+        def openFollowRedirects = { String urlStr ->
+            String cur = urlStr
+            for (int i = 0; i < 8; i++) {
+                HttpURLConnection c = (HttpURLConnection) new URL(cur).openConnection()
+                c.instanceFollowRedirects = false
+                c.requestMethod = "GET"
+                c.setRequestProperty("Accept", "application/octet-stream")
+                c.setRequestProperty("User-Agent", "${project.name}-${project.gradle.gradleVersion}")
+                if (ghToken) c.setRequestProperty("Authorization", "Bearer ${ghToken}")
+                c.connectTimeout = 15000
+                c.readTimeout = 60000
+
+                int code = c.responseCode
+                logger.lifecycle("[downloadNtmCe] GET ${cur} -> ${code} (type=${c.contentType}, len=${c.contentLengthLong})")
+
+                if (code in [301, 302, 303, 307, 308]) {
+                    String loc = c.getHeaderField("Location")
+                    if (!loc) throw new GradleException("[downloadNtmCe] Redirect without Location header from ${cur}")
+                    logger.lifecycle("[downloadNtmCe] Redirect Location: ${loc}")
+                    cur = loc
+                    continue
+                }
+                return c
+            }
+            throw new GradleException("[downloadNtmCe] Too many redirects for ${urlStr}")
+        }
+
+        HttpURLConnection dl = openFollowRedirects(downloadUrlStr)
+        int dlCode = dl.responseCode
+        if (!(dlCode >= 200 && dlCode < 300)) {
+            def errTxt = ""
+            def es = dl.errorStream
+            if (es != null) es.withCloseable { errTxt = it.getText("UTF-8") }
+            throw new GradleException("[downloadNtmCe] Download failed ${dlCode} for ${downloadUrlStr}. Body:\n${(errTxt ?: "").take(2000)}")
+        }
+
+        ntmCeJarFile.parentFile.mkdirs()
+        dl.inputStream.withCloseable { i ->
+            ntmCeJarFile.withOutputStream { o -> o << i }
+        }
+
+        logger.lifecycle("[downloadNtmCe] Downloaded file: ${ntmCeJarFile} (${ntmCeJarFile.length()} bytes)")
+
+        if (ntmCeJarFile.length() < 64 * 1024) {
+            byte[] head = new byte[512]
+            int n = 0
+            new FileInputStream(ntmCeJarFile).withCloseable { fis -> n = fis.read(head) }
+            String headText = (n > 0) ? new String(head, 0, n, "UTF-8") : ""
+            logger.lifecycle("[downloadNtmCe] WARNING: File is unusually small. First bytes as UTF-8:\n${headText}")
+            throw new GradleException("[downloadNtmCe] Downloaded file is too small (${ntmCeJarFile.length()} bytes). See log above for content preview.")
+        }
+
+        byte[] sig = new byte[4]
+        new FileInputStream(ntmCeJarFile).withCloseable { fis ->
+            if (fis.read(sig) != 4) throw new GradleException("[downloadNtmCe] Could not read file signature.")
+        }
+        boolean isZip = (sig[0] == (byte)0x50 && sig[1] == (byte)0x4B && (sig[2] == (byte)0x03 || sig[2] == (byte)0x05 || sig[2] == (byte)0x07) && (sig[3] == (byte)0x04 || sig[3] == (byte)0x06 || sig[3] == (byte)0x08))
+        if (!isZip) {
+            throw new GradleException("[downloadNtmCe] Downloaded file is not a ZIP/JAR (signature bytes=${sig.collect{String.format('%02X', it)}.join(' ')}).")
+        }
+
+        def jar = new java.util.jar.JarFile(ntmCeJarFile)
+        try {
+            int entries = jar.entries().toList().size()
+            logger.lifecycle("[downloadNtmCe] JAR entries=${entries}, hasManifest=${jar.manifest != null}")
+        } finally {
+            jar.close()
+        }
+    }
+
+}
+
+tasks.named("extractDependencyATs").configure { dependsOn("downloadNtmCe") }
+
+idea.project.settings {
+    taskTriggers {
+        afterSync 'cleanroomAfterSync'
+    }
+}
+
+apply from: 'gradle/scripts/publishing.gradle'
+apply from: 'gradle/scripts/extra.gradle'
