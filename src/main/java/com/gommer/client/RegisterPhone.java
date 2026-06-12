@@ -16,5 +16,7 @@ public class RegisterPhone {
     public static void regModels(ModelRegistryEvent e) {
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.PHONE, 0,
                 new ModelResourceLocation("gommer:phone_reels", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENT_POWDER, 0,
+                new ModelResourceLocation("gommer:fent_powder", "inventory"));
     }
 }
