@@ -11,6 +11,11 @@ import com.gommer.reels;
 @Mod.EventBusSubscriber(modid = reels.MODID)
 public class RegistryHandler {
 
+    public static final Item PHONE = new Item()
+        .setTranslationKey(reels.MODID + ".phone")
+        .setRegistryName("phone")
+        .setMaxStackSize(1);
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         for (Block block : AddonBlocks.ALL_BLOCKS) {
@@ -25,6 +30,7 @@ public class RegistryHandler {
             itemBlock.setRegistryName(block.getRegistryName());
             event.getRegistry().register(itemBlock);
         }
+        event.getRegistry().register(PHONE);
+        event.getRegistry().register(AddonItems.FENTANYL);
     }
 }
-
