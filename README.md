@@ -1,3 +1,3 @@
-Thanks leafia for letting me borrow code and use their mod as a template.
+built off this https://github.com/Quantum-Studios-MC/NTMCE-Addon-Template
 
 i dont know how to code so consider any progress a miricle
