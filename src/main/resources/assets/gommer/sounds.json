@@ -1,0 +1,11 @@
+{
+  "rusia": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "gommer:rusia",
+        "stream": true
+      }
+    ]
+  }
+}

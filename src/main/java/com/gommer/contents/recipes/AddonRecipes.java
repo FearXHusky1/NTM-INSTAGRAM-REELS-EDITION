@@ -15,7 +15,7 @@ public class AddonRecipes {
 
     public static void register() {
         ChemicalPlantRecipes.INSTANCE.register( //monsta recipe
-            new GenericRecipe("gommer.white_creature")
+            new GenericRecipe("reels.white_creature")
                 .setupNamed(400, 2000)
                 .setNameWrapper("White Creature Production")
                 .setIcon(RegistryHandler.WHITE_CREATURE)
@@ -32,7 +32,7 @@ public class AddonRecipes {
         );
 
         AssemblyMachineRecipes.INSTANCE.register( //phone recipe
-            new GenericRecipe("gommer.phone")
+            new GenericRecipe("reels.phone")
                 .setup(400, 250)
                 .setIcon(RegistryHandler.PHONE)
                 .inputItems(
