@@ -11,15 +11,12 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-
-//this was a pain
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class CommunismOverlay {
 
@@ -34,13 +31,10 @@ public class CommunismOverlay {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.player == null) return;
         PotionEffect eff = mc.player.getActivePotionEffect(CommunismEffect.INSTANCE);
-
         if (eff == null) { stopSound(mc); frames = 0; return; }
         startSound(mc);
-
         float t = Math.min(1f, ++frames / 400f), a = MAX_A * t * t;
         if (a <= 0) return;
-
         ScaledResolution sr = new ScaledResolution(mc);
         mc.getTextureManager().bindTexture(FUNNY);
         GL11.glEnable(GL11.GL_BLEND);
@@ -69,10 +63,7 @@ public class CommunismOverlay {
             mc.getSoundHandler().playSound(sound);
         }
     }
-
-    private static void stopSound(Minecraft mc) {
-        if (sound != null) { mc.getSoundHandler().stopSound(sound); sound = null; }
-    }
+    private static void stopSound(Minecraft mc) { if (sound != null) { mc.getSoundHandler().stopSound(sound); sound = null; } }
 
     private static void strip() {
         if (stash != null) return;
@@ -80,7 +71,6 @@ public class CommunismOverlay {
         if (mc.player == null || mc.player.getActivePotionEffect(CommunismEffect.INSTANCE) == null) return;
         stash = mc.player.getActivePotionMap().remove(MobEffects.HUNGER);
     }
-
     private static void unstrip() {
         if (stash == null) return;
         Minecraft mc = Minecraft.getMinecraft();
