@@ -41,6 +41,8 @@ public class RegistryHandler {
 
     public static final SoundEvent RUSIA = new SoundEvent(new ResourceLocation("gommer", "rusia")).setRegistryName(new ResourceLocation("gommer", "rusia"));
 
+    public static final Item FENTRIFUGE_ELEMENT = new Item().setTranslationKey(reels.MODID + ".fentrifuge_element").setRegistryName("fentrifuge_element");
+
     @SubscribeEvent public static void registerBlocks(RegistryEvent.Register<Block> e) { for (Block b : AddonBlocks.ALL_BLOCKS) e.getRegistry().register(b); }
     @SubscribeEvent public static void registerItems(RegistryEvent.Register<Item> e) {
         for (Block b : AddonBlocks.ALL_BLOCKS) {
@@ -52,7 +54,7 @@ public class RegistryHandler {
             } : new ItemBlock(b);
             ib.setRegistryName(b.getRegistryName()); e.getRegistry().register(ib);
         }
-        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE);
+        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT);
     }
     @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); }
     @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); }

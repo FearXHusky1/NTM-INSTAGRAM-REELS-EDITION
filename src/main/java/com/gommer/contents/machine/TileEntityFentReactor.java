@@ -30,7 +30,7 @@ public class TileEntityFentReactor extends TileEntityMachineBase implements ITic
             if (s.getItem() == RegistryHandler.FENT_POWDER) {
                 inventory.extractItem(0, 1, false);
                 burnTime = maxBurnTime;
-                if (world.rand.nextInt(20) == 0)
+                if (world.rand.nextInt(1000) == 0)
                     ExplosionNukeSmall.explode(world, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, ExplosionNukeSmall.PARAMS_MEDIUM);
                 markDirty();
                 world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);

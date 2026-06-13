@@ -1,11 +1,13 @@
 package com.gommer.contents.recipes;
 
+import com.gommer.contents.registers.AddonBlocks;
 import com.gommer.contents.registers.RegistryHandler;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.fluid.*;
 import com.hbm.inventory.recipes.*;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.items.ModItems;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class AddonRecipes {
@@ -33,5 +35,22 @@ public class AddonRecipes {
                 new RecipesCommon.ComparableStack(ModItems.ingot_iodine, 4))
             .inputFluids(new FluidStack(Fluids.WATER, 2000))
             .outputItems(new ItemStack(RegistryHandler.FENT_POWDER)));
+
+        AssemblyMachineRecipes.INSTANCE.register(new GenericRecipe("reels.fentrifuge_element")
+            .setup(400, 5000).setIcon(RegistryHandler.FENTRIFUGE_ELEMENT)
+            .inputItems(new RecipesCommon.ComparableStack(ModItems.centrifuge_element, 1),
+                new RecipesCommon.ComparableStack(ModItems.motor_desh, 1),
+                new RecipesCommon.ComparableStack(ModItems.ingot_technetium, 4),
+                new RecipesCommon.ComparableStack(ModItems.bottle_mercury, 4))
+            .outputItems(new ItemStack(RegistryHandler.FENTRIFUGE_ELEMENT)));
+
+        AssemblyMachineRecipes.INSTANCE.register(new GenericRecipe("reels.fent_reactor")
+            .setup(600, 100000).setIcon(Item.getItemFromBlock(AddonBlocks.fent_reactor))
+            .inputItems(new RecipesCommon.ComparableStack(RegistryHandler.FENTRIFUGE_ELEMENT, 4),
+                new RecipesCommon.ComparableStack(ModItems.plate_desh, 12),
+                new RecipesCommon.ComparableStack(ModItems.ingot_tungsten, 8),
+                new RecipesCommon.ComparableStack(ModItems.ingot_polymer, 8),
+                new RecipesCommon.ComparableStack(ModItems.motor_desh, 2))
+            .outputItems(new ItemStack(AddonBlocks.fent_reactor)));
     }
 }

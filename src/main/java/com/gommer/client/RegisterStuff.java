@@ -16,5 +16,6 @@ public class RegisterStuff {
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENT_POWDER, 0, new ModelResourceLocation("gommer:fent_powder", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.WHITE_CREATURE, 0, new ModelResourceLocation("gommer:white_creature", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(AddonBlocks.fent_reactor), 0, new ModelResourceLocation("gommer:fent_reactor", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENTRIFUGE_ELEMENT, 0, new ModelResourceLocation("gommer:fentrifuge_element", "inventory"));
     }
 }
