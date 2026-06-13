@@ -61,10 +61,6 @@ public class FentFluid extends Fluid {
                 Color.white
         );
     }
-    public AddonFluidType(String name, int color, int p, int f, int r, EnumSymbol symbol, String texFluid) {
-        super(name,color,p,f,r,symbol,texFluid.toLowerCase(Locale.US),0xFFFFFF,1121+(id++),null);
-        AddonFluids.metaOrderPointer.add(this);
-    }
 
     @Override
     public String getUnlocalizedName() {
