@@ -9,14 +9,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.gommer.contents.effects.CommunismEffect;
 import com.gommer.reels;
 
 @Mod.EventBusSubscriber(modid = reels.MODID)
@@ -87,6 +91,9 @@ public class RegistryHandler {
         }
     };
 
+    public static final SoundEvent RUSIA = new SoundEvent(new ResourceLocation("gommer", "rusia"))
+        .setRegistryName(new ResourceLocation("gommer", "rusia"));
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         for (Block block : AddonBlocks.ALL_BLOCKS) {
@@ -105,4 +112,18 @@ public class RegistryHandler {
         event.getRegistry().register(FENT_POWDER);
         event.getRegistry().register(WHITE_CREATURE);
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    @SubscribeEvent
+    public static void registerPotions(RegistryEvent.Register<Potion> event) {
+        event.getRegistry().register(CommunismEffect.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+        event.getRegistry().register(RUSIA);
+    }
+}
+>>>>>>> Stashed changes

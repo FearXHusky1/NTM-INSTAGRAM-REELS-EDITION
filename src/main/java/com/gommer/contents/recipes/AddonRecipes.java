@@ -45,5 +45,23 @@ public class AddonRecipes {
                     new ItemStack(RegistryHandler.PHONE)
                 )
         );
+
+        ChemicalPlantRecipes.INSTANCE.register( //fentanyla recipe
+            new GenericRecipe("reels.fent_powder")
+                .setupNamed(600, 15000)
+                .setNameWrapper("Fentanyl Synthesis")
+                .setIcon(RegistryHandler.FENT_POWDER)
+                .inputItems(
+                    new RecipesCommon.ComparableStack(ModItems.bottle_mercury, 8),
+                    new RecipesCommon.ComparableStack(ModItems.ingot_arsenic, 4),
+                    new RecipesCommon.ComparableStack(ModItems.ingot_iodine, 4)
+                )
+                .inputFluids(
+                    new FluidStack(Fluids.WATER, 2000)
+                )
+                .outputItems(
+                    new ItemStack(RegistryHandler.FENT_POWDER)
+                )
+        );
     }
 }
