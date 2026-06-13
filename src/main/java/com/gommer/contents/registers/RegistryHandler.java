@@ -1,148 +1,61 @@
 package com.gommer.contents.registers;
 
-import com.gommer.contents.registers.entity.Droid;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Biomes;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.init.*;
+import net.minecraft.item.*;
+import net.minecraft.potion.*;
+import net.minecraft.util.*;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.gommer.contents.effects.CommunismEffect;
 import com.gommer.reels;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 @Mod.EventBusSubscriber(modid = reels.MODID)
 public class RegistryHandler {
 
-    public static final Item DNB = new ItemFood(0, 30, true) {
-        {
-            setTranslationKey(reels.MODID + ".dnb");
-            setRegistryName("dnb");
-            setAlwaysEdible();
+    public static final Item PHONE = new Item().setTranslationKey(reels.MODID + ".phone").setRegistryName("phone").setMaxStackSize(1);
 
-        }
-    };
-    public static final Item PHONE = new Item()
-            .setTranslationKey(reels.MODID + ".phone")
-            .setRegistryName("phone")
-            .setMaxStackSize(1);
+    public static final Item FENT_POWDER = new ItemFood(0, 0, false) {{
+        setTranslationKey(reels.MODID + ".fent_powder"); setRegistryName("fent_powder"); setAlwaysEdible();
+    } @Override protected void onFoodEaten(ItemStack s, World w, EntityPlayer p) {
+        if (!w.isRemote) p.attackEntityFrom(new DamageSource("fent_overdose") {
+            @Override public ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase v) { return new TextComponentString(v.getName() + " convulsed"); }
+        }, 999999f);
+    }};
 
-    public static final Item FENT_POWDER = new ItemFood(0, 0, false) {
-        {
-            setTranslationKey(reels.MODID + ".fent_powder");
-            setRegistryName("fent_powder");
-            setAlwaysEdible();
-        }
+    public static final Item WHITE_CREATURE = new ItemFood(0, 0, false) {{
+        setTranslationKey(reels.MODID + ".white_creature"); setRegistryName("white_creature"); setAlwaysEdible(); setMaxStackSize(16);
+    } @Override public EnumAction getItemUseAction(ItemStack s) { return EnumAction.DRINK; }
+    @Override protected void onFoodEaten(ItemStack s, World w, EntityPlayer p) {
+        if (w.isRemote) return;
+        if (w.rand.nextInt(10) == 0) p.attackEntityFrom(new DamageSource("heart_attack") {
+            @Override public ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase v) { return new TextComponentString(v.getName() + " had a heart attack"); }
+        }, 999999f);
+        else { p.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 3600, 2)); p.addPotionEffect(new PotionEffect(MobEffects.SPEED, 3600, 9)); p.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 3600, 1)); }
+        w.playSound(null, p.posX, p.posY, p.posZ, SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, .5f, 1f);
+    }};
 
-        @Override
-        protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
-            if (!world.isRemote) {
-                player.attackEntityFrom(
-                        new DamageSource("fent_overdose") { // this shit is the funniest thing ever trust me
-                            @Override
-                            public net.minecraft.util.text.ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase victim) {
-                                return new TextComponentString(victim.getName() + " convulsed");
-                            }
-                        },
-                        999999f
-                );
-            }
-        }
-    };
+    public static final SoundEvent RUSIA = new SoundEvent(new ResourceLocation("gommer", "rusia")).setRegistryName(new ResourceLocation("gommer", "rusia"));
 
-    public static final Item WHITE_CREATURE = new ItemFood(0, 0, true) {
-        {
-            setTranslationKey(reels.MODID + ".white_creature");
-            setRegistryName("white_creature");
-            setAlwaysEdible();
-            setMaxStackSize(16);
-        }
+    public static final Item FENTRIFUGE_ELEMENT = new Item().setTranslationKey(reels.MODID + ".fentrifuge_element").setRegistryName("fentrifuge_element");
 
-        @Override
-        public EnumAction getItemUseAction(ItemStack stack) {
-            return EnumAction.DRINK;
-        }
-
-        @Override
-        protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
-            if (!world.isRemote) {
-                if (world.rand.nextInt(10) == 0) {
-                    player.attackEntityFrom(
-                            new DamageSource("heart_attack") {
-                                @Override
-                                public net.minecraft.util.text.ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase victim) {
-                                    return new TextComponentString(victim.getName() + " had a heart attack"); //realism
-                                }
-                            },
-                            999999f
-                    );
-                } else {
-                    player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 3600, 2));
-                    player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 3600, 9));
-                    player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 3600, 1));
+    @SubscribeEvent public static void registerBlocks(RegistryEvent.Register<Block> e) { for (Block b : AddonBlocks.ALL_BLOCKS) e.getRegistry().register(b); }
+    @SubscribeEvent public static void registerItems(RegistryEvent.Register<Item> e) {
+        for (Block b : AddonBlocks.ALL_BLOCKS) {
+            ItemBlock ib = b == AddonBlocks.fent_reactor ? new ItemBlock(b) {
+                @Override public void addInformation(ItemStack s, net.minecraft.world.World w, java.util.List<String> t, net.minecraft.client.util.ITooltipFlag f) {
+                    t.add(TextFormatting.GRAY + "Converts pure fentanyl into HE through");
+                    t.add(TextFormatting.GRAY + "the power of bullshit and centrifental force");
                 }
-                world.playSound(null, player.posX, player.posY, player.posZ,
-                        SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, 0.5F, 1.0F);
-            }
+            } : new ItemBlock(b);
+            ib.setRegistryName(b.getRegistryName()); e.getRegistry().register(ib);
         }
-    };
-
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        for (Block block : AddonBlocks.ALL_BLOCKS) {
-            event.getRegistry().register(block);
-        }
+        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT);
     }
-
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        for (Block block : AddonBlocks.ALL_BLOCKS) {
-            ItemBlock itemBlock = new ItemBlock(block);
-            itemBlock.setRegistryName(block.getRegistryName());
-            event.getRegistry().register(itemBlock);
-        }
-        event.getRegistry().register(PHONE);
-        event.getRegistry().register(FENT_POWDER);
-        event.getRegistry().register(WHITE_CREATURE);
-        event.getRegistry().register(DNB);
-    }
-    //mobs
-    @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-        System.out.println("Registering Droid!");
-        event.getRegistry().register(
-                EntityEntryBuilder.create()
-                        .entity(Droid.class)
-                        .id(new ResourceLocation("reels", "droid"), 1)
-                        .name("droid")
-                        .tracker(80, 3, true)
-                        .build()
-        );
-        EntityRegistry.addSpawn(
-                Droid.class,
-                10,                      // weight (how common, 100 = very common)
-                1,                       // min group size
-                15,                       // max group size
-                EnumCreatureType.MONSTER, // spawns like a hostile mob (at night, in dark)
-                Biomes.PLAINS,
-                Biomes.FOREST,
-                Biomes.DESERT
-        );
-    }
-
+    @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); }
+    @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); }
 }
