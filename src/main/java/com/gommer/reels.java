@@ -1,8 +1,8 @@
 package com.gommer;
 
 import com.gommer.contents.recipes.AddonRecipes;
-import com.gommer.contents.registers.AddonBlocks;
-import com.gommer.contents.registers.AddonFluids;
+//import com.gommer.contents.registers.AddonBlocks;
+//import com.gommer.contents.registers.AddonFluids;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -24,13 +24,13 @@ public class reels {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        AddonFluids.preInit();
-        AddonBlocks.preInit();
+
+
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        AddonFluids.init();
+
     }
 
     @EventHandler

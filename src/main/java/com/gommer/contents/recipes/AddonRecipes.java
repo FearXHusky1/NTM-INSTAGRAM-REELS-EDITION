@@ -1,5 +1,6 @@
 package com.gommer.contents.recipes;
 
+import com.gommer.contents.registers.RegistryHandler;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.Fluids;
@@ -7,7 +8,7 @@ import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.items.ModItems;
-import com.gommer.contents.registers.RegistryHandler;
+
 import net.minecraft.item.ItemStack;
 
 public class AddonRecipes {

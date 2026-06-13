@@ -1,6 +1,6 @@
 package com.gommer.contents.registers;
 
-import com.gommer.contents.fluids.FentFluid.FentFluidBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
@@ -13,7 +13,7 @@ public class AddonBlocks {
     public static Block fent_fluid_block;
 
     public static void preInit() {
-        fent_fluid_block = new FentFluidBlock(AddonFluids.fent, Material.WATER, "fent_fluid");
+
     }
 }
 

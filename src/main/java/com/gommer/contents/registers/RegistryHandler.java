@@ -23,9 +23,9 @@ import com.gommer.reels;
 public class RegistryHandler {
 
     public static final Item PHONE = new Item()
-        .setTranslationKey(reels.MODID + ".phone")
-        .setRegistryName("phone")
-        .setMaxStackSize(1);
+            .setTranslationKey(reels.MODID + ".phone")
+            .setRegistryName("phone")
+            .setMaxStackSize(1);
 
     public static final Item FENT_POWDER = new ItemFood(0, 0, false) {
         {
@@ -38,13 +38,13 @@ public class RegistryHandler {
         protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
             if (!world.isRemote) {
                 player.attackEntityFrom(
-                    new DamageSource("fent_overdose") { // this shit is the funniest thing ever trust me
-                        @Override
-                        public net.minecraft.util.text.ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase victim) {
-                            return new TextComponentString(victim.getName() + " convulsed");
-                        }
-                    },
-                    999999f
+                        new DamageSource("fent_overdose") { // this shit is the funniest thing ever trust me
+                            @Override
+                            public net.minecraft.util.text.ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase victim) {
+                                return new TextComponentString(victim.getName() + " convulsed");
+                            }
+                        },
+                        999999f
                 );
             }
         }
@@ -68,13 +68,13 @@ public class RegistryHandler {
             if (!world.isRemote) {
                 if (world.rand.nextInt(10) == 0) {
                     player.attackEntityFrom(
-                        new DamageSource("heart_attack") {
-                            @Override
-                            public net.minecraft.util.text.ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase victim) {
-                                return new TextComponentString(victim.getName() + " had a heart attack"); //realism
-                            }
-                        },
-                        999999f
+                            new DamageSource("heart_attack") {
+                                @Override
+                                public net.minecraft.util.text.ITextComponent getDeathMessage(net.minecraft.entity.EntityLivingBase victim) {
+                                    return new TextComponentString(victim.getName() + " had a heart attack"); //realism
+                                }
+                            },
+                            999999f
                     );
                 } else {
                     player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 3600, 2));
@@ -82,7 +82,7 @@ public class RegistryHandler {
                     player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 3600, 1));
                 }
                 world.playSound(null, player.posX, player.posY, player.posZ,
-                    SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, 0.5F, 1.0F);
+                        SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, 0.5F, 1.0F);
             }
         }
     };
