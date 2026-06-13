@@ -1,7 +1,10 @@
 package com.gommer.contents.registers;
 
+import com.gommer.contents.registers.entity.Droid;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Biomes;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
@@ -11,6 +14,7 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -18,10 +22,21 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.gommer.reels;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 @Mod.EventBusSubscriber(modid = reels.MODID)
 public class RegistryHandler {
 
+    public static final Item DNB = new ItemFood(0, 30, true) {
+        {
+            setTranslationKey(reels.MODID + ".dnb");
+            setRegistryName("dnb");
+            setAlwaysEdible();
+
+        }
+    };
     public static final Item PHONE = new Item()
             .setTranslationKey(reels.MODID + ".phone")
             .setRegistryName("phone")
@@ -50,7 +65,7 @@ public class RegistryHandler {
         }
     };
 
-    public static final Item WHITE_CREATURE = new ItemFood(0, 0, false) {
+    public static final Item WHITE_CREATURE = new ItemFood(0, 0, true) {
         {
             setTranslationKey(reels.MODID + ".white_creature");
             setRegistryName("white_creature");
@@ -104,5 +119,30 @@ public class RegistryHandler {
         event.getRegistry().register(PHONE);
         event.getRegistry().register(FENT_POWDER);
         event.getRegistry().register(WHITE_CREATURE);
+        event.getRegistry().register(DNB);
     }
+    //mobs
+    @SubscribeEvent
+    public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
+        System.out.println("Registering Droid!");
+        event.getRegistry().register(
+                EntityEntryBuilder.create()
+                        .entity(Droid.class)
+                        .id(new ResourceLocation("reels", "droid"), 1)
+                        .name("droid")
+                        .tracker(80, 3, true)
+                        .build()
+        );
+        EntityRegistry.addSpawn(
+                Droid.class,
+                10,                      // weight (how common, 100 = very common)
+                1,                       // min group size
+                15,                       // max group size
+                EnumCreatureType.MONSTER, // spawns like a hostile mob (at night, in dark)
+                Biomes.PLAINS,
+                Biomes.FOREST,
+                Biomes.DESERT
+        );
+    }
+
 }

@@ -9,11 +9,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 // why tf did you delete this?
+// I was planing to move it all to AddonItems for consistancy
+
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class RegisterStuff {
 
     @SubscribeEvent
     public static void regModels(ModelRegistryEvent e) {
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.DNB, 0,
+                new ModelResourceLocation("gommer:dnb", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.PHONE, 0,
                 new ModelResourceLocation("gommer:phone_reels", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENT_POWDER, 0,

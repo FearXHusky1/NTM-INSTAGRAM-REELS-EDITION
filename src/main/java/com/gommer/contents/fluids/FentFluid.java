@@ -1,8 +1,6 @@
 package com.gommer.contents.fluids;
 
 import com.gommer.contents.registers.AddonBlocks;
-import com.gommer.contents.registers.AddonFluids;
-import com.hbm.render.misc.EnumSymbol;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -15,7 +13,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import java.awt.*;
-import java.util.Locale;
 
 public class FentFluid extends Fluid {
 

@@ -2,7 +2,6 @@ package com.gommer.contents.registers;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,13 +2,10 @@ package com.gommer.contents.fluids;
 
 //import com.gommer.contents.registers.AddonFluids;
 import com.hbm.inventory.fluid.FluidType;
-import com.hbm.inventory.fluid.trait.FluidTrait;
 import com.hbm.render.misc.EnumSymbol;
-import java.util.ArrayList;
+
 import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.function.Function;
-import java.util.List;
+
 import com.gommer.init.AddonFluidTraits;
 
 public class AddonFluidType extends FluidType {
