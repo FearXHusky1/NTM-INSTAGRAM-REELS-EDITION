@@ -2,6 +2,8 @@ package com.reelsedition.proxy;
 
 import com.reelsedition.contents.registers.AddonBlocks;
 import com.reelsedition.contents.registers.entity.Droid;
+import com.reelsedition.contents.registers.entity.Dresden;
+import com.reelsedition.render.RenderDresden;
 import com.reelsedition.render.RenderDroid;
 import com.hbm.items.weapon.sedna.factory.LegoClient;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -20,6 +22,10 @@ public class ClientProxy extends CommonProxy {
                 manager -> new RenderDroid(manager)
         );
 
+        RenderingRegistry.registerEntityRenderingHandler(
+                Dresden.class,
+                manager -> new RenderDresden(manager)
+        );
         Droid.DROID_LASER.setRendererBeam(LegoClient.RENDER_LASER_RED);
 
         ModelLoader.setCustomModelResourceLocation(

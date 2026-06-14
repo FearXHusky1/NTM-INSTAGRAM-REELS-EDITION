@@ -1,5 +1,7 @@
 package com.reelsedition.contents.recipes;
 
+import com.hbm.inventory.recipes.loader.SerializableRecipe;
+import com.reelsedition.contents.AddonFluids;
 import com.reelsedition.contents.registers.AddonBlocks;
 import com.reelsedition.contents.registers.RegistryHandler;
 import com.hbm.inventory.RecipesCommon;
@@ -52,5 +54,15 @@ public class AddonRecipes {
                 new RecipesCommon.ComparableStack(ModItems.ingot_polymer, 8),
                 new RecipesCommon.ComparableStack(ModItems.motor_desh, 2))
             .outputItems(new ItemStack(AddonBlocks.fent_reactor)));
+
+//YOU VILL EAT ZE BUGS
+        ChemicalPlantRecipes.INSTANCE.register(new GenericRecipe("reelsedition.bug_paste")
+                .setupNamed(60, 15000).setNameWrapper("Bug Paste")
+                .setIcon(RegistryHandler.FENT_POWDER)
+                .inputItems(new RecipesCommon.ComparableStack(ModItems.glyphid_meat, 1))
+                .inputFluids(new FluidStack(Fluids.WATER, 10))
+                .outputFluids(new FluidStack(AddonFluids.BUG_PASTE, 100)));
     }
+    // how the fuck do we get non-Generic recipes (assembler, chem, purex) to work?
+
 }

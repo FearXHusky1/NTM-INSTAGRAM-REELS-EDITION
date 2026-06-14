@@ -11,6 +11,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import static java.lang.Math.abs;
 
 public class Droid extends EntityMob implements IRangedAttackMob {
 
@@ -32,6 +33,7 @@ public class Droid extends EntityMob implements IRangedAttackMob {
         double dx = target.posX - this.posX;
         double dy = target.posY + target.getEyeHeight() - (this.posY + this.getEyeHeight());
         double dz = target.posZ - this.posZ;
+        double eye = abs(this.posY - this.getEyeHeight());
         double hDist = Math.sqrt(dx * dx + dz * dz);
 
         float yaw = (float)(Math.toDegrees(Math.atan2(dz, dx)) - 90);
@@ -42,7 +44,15 @@ public class Droid extends EntityMob implements IRangedAttackMob {
         this.rotationYaw = yaw;
         this.rotationPitch = pitch;
 
-        EntityBulletBeamBase laser = new EntityBulletBeamBase(this, DROID_LASER, 10.0F, 0F, 0, 0, 0);
+        //george droid liberal oblitierator hotfix, there might be a better way to fix this, maybe just invert the dy stuff?
+        //also this does not fix the rendering, idk if this even effects it at all
+        if (eye != 0)
+        {
+            this.rotationPitch = -pitch;
+        }
+
+
+        EntityBulletBeamBase laser = new EntityBulletBeamBase(this, DROID_LASER, 10.0F, .1F, 0, 0, 0);
         this.world.spawnEntity(laser);
 
         this.rotationYaw = prevYaw;
@@ -76,7 +86,7 @@ public class Droid extends EntityMob implements IRangedAttackMob {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(2.0D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50.0D);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(15.0D);
     }

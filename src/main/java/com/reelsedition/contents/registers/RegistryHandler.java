@@ -1,5 +1,6 @@
 package com.reelsedition.contents.registers;
 
+import com.reelsedition.contents.registers.entity.Dresden;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.*;
@@ -69,7 +70,7 @@ public class RegistryHandler {
     }
     @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); }
     @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); }
-    //mobs, gio dont overwrite this again with ur european code
+
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
@@ -78,6 +79,14 @@ public class RegistryHandler {
                         .entity(Droid.class)
                         .id(new ResourceLocation("reelsedition", "droid"), 1)
                         .name("droid")
+                        .tracker(80, 3, true)
+                        .build()
+        );
+        event.getRegistry().register(
+                EntityEntryBuilder.create()
+                        .entity(Dresden.class)
+                        .id(new ResourceLocation("reelsedition", "dresden"), 1)
+                        .name("dresden")
                         .tracker(80, 3, true)
                         .build()
         );
