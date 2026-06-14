@@ -30,7 +30,7 @@ public abstract class MixinFluids {
         return fluid;
     }
 */ // we live by our own rules
-    @Inject(method = "init", at = @At("TAIL"))
+    @Inject(method = "init", at = @At("TAIL"), require = 1)
     private static void reelsedition$registerExtraFluids(CallbackInfo ci) {
         AddonFluids.init();
     }
