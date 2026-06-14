@@ -28,17 +28,19 @@ public class Droid extends EntityMob implements IRangedAttackMob {
     }
 
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
-        float prevYaw = this.rotationYaw;
-        float prevPitch = this.rotationPitch;
-
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) { //horrible attempt to fix the laser rendering at correct target i turn left now goodluck everybody else
         double dx = target.posX - this.posX;
         double dy = target.posY + target.getEyeHeight() - (this.posY + this.getEyeHeight());
         double dz = target.posZ - this.posZ;
-        double horizontalDist = Math.sqrt(dx * dx + dz * dz);
+        double hDist = Math.sqrt(dx * dx + dz * dz);
 
-        this.rotationYaw = (float)(Math.atan2(dz, dx) * 180.0D / Math.PI) - 90F;
-        this.rotationPitch = (float)(-Math.atan2(dy, horizontalDist) * 180.0D / Math.PI);
+        float yaw = (float)(Math.toDegrees(Math.atan2(dz, dx)) - 90);
+        float pitch = (float)Math.toDegrees(Math.atan2(dy, hDist));
+
+        float prevYaw = this.rotationYaw;
+        float prevPitch = this.rotationPitch;
+        this.rotationYaw = yaw;
+        this.rotationPitch = pitch;
 
         EntityBulletBeamBase laser = new EntityBulletBeamBase(this, DROID_LASER, 10.0F, 0F, 0, 0, 0);
         this.world.spawnEntity(laser);
