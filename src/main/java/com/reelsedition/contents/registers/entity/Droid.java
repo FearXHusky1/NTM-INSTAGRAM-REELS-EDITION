@@ -53,6 +53,11 @@ public class Droid extends EntityMob implements IRangedAttackMob {
     public void setSwingingArms(boolean swinging) {}
 
     @Override
+    public String getName() {
+        return "George Droid";
+    }
+
+    @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(1, new EntityAIAttackRanged(this, 1.0D, 5, 20, 25.0F));
