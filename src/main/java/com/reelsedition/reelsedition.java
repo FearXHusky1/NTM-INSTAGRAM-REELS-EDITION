@@ -3,6 +3,7 @@ package com.reelsedition;
 import com.reelsedition.contents.machine.TileEntityFentReactor;
 import com.reelsedition.contents.recipes.AddonRecipes;
 import com.reelsedition.contents.registers.*;
+import com.reelsedition.init.AddonFluidTraits;
 import com.reelsedition.proxy.CommonProxy;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -33,6 +34,7 @@ public class reelsedition {
         AddonBlocks.preInit();
 
         proxy.preInit(e);
+        AddonFluidTraits.preInit();
         GameRegistry.registerTileEntity(TileEntityFentReactor.class, "reelsedition:fent_reactor");
     }
 
