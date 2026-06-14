@@ -33,17 +33,18 @@ public class Droid extends EntityMob implements IRangedAttackMob {
         float prevPitch = this.rotationPitch;
 
         double dx = target.posX - this.posX;
-        double dy = target.posY - (this.posY + this.getEyeHeight());
+        double dy = target.posY + target.getEyeHeight() - (this.posY + this.getEyeHeight());
         double dz = target.posZ - this.posZ;
         double horizontalDist = Math.sqrt(dx * dx + dz * dz);
 
         this.rotationYaw = (float)(Math.atan2(dz, dx) * 180.0D / Math.PI) - 90F;
-        this.rotationPitch = (float)(Math.atan2(dy, horizontalDist) * 180.0D / Math.PI);
+        this.rotationPitch = (float)(-Math.atan2(dy, horizontalDist) * 180.0D / Math.PI);
 
         EntityBulletBeamBase laser = new EntityBulletBeamBase(this, DROID_LASER, 10.0F, 0F, 0, 0, 0);
+        this.world.spawnEntity(laser);
+
         this.rotationYaw = prevYaw;
         this.rotationPitch = prevPitch;
-        this.world.spawnEntity(laser);
     }
 
     @Override

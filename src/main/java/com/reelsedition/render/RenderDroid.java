@@ -12,7 +12,7 @@ public class RenderDroid extends RenderBiped<Droid> {
             new ResourceLocation("reelsedition", "textures/entity/droid.png");
 
     public RenderDroid(RenderManager manager) {
-        super(manager, new ModelBiped(0, 0, 64, 32), 0.5F);
+        super(manager, new ModelBiped(0, 0, 64, 64), 0.5F);
     }
 
     @Override
