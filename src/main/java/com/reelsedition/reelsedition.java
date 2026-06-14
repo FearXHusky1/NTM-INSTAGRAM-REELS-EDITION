@@ -31,14 +31,14 @@ public class reelsedition {
     @EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         AddonBlocks.preInit();
-        AddonFluids.preInit();
+
         proxy.preInit(e);
         GameRegistry.registerTileEntity(TileEntityFentReactor.class, "reelsedition:fent_reactor");
     }
 
     @EventHandler
     public void init(FMLInitializationEvent e) {
-        AddonFluids.init();
+
     }
 
     @EventHandler

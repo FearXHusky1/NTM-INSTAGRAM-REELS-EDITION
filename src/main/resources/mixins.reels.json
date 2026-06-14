@@ -4,9 +4,9 @@
   "minVersion": "0.8",
   "package": "com.reelsediton.overwrite_contents.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
+  "mixins": ["hbm.MixinFluids"],
   "client": [
-    "hbm.MixinFluids"
+
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,6 +1,7 @@
 package com.reelsedition.overwrite_contents.mixin.hbm;
 
 import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.trait.FluidTrait;
 import com.hbm.inventory.fluid.trait.*;
 import com.hbm.render.misc.EnumSymbol;
 import org.spongepowered.asm.mixin.*;
@@ -11,7 +12,9 @@ import java.util.List;
 
 @Mixin(value = com.hbm.inventory.fluid.Fluids.class, remap = false)
 public abstract class MixinFluids {
-
+    static {
+        System.out.println("Fluid Mixin Loading");
+    }
     @Shadow @Final
     protected static List<FluidType> metaOrder;
 
@@ -27,11 +30,19 @@ public abstract class MixinFluids {
 
     @Inject(method = "init", at = @At("TAIL"))
     private static void hbmextra$registerExtraFluids(CallbackInfo ci) {
-        int idCounter = 5000;
-        FluidType test = reels$createFixed("TEST", 0x4CC2A2, 0, 0, 0, EnumSymbol.NONE, idCounter++);
-        test.addTraits(com.hbm.inventory.fluid.Fluids.LIQUID, com.hbm.inventory.fluid.Fluids.VISCOUS);
-        metaOrder.add(test);
+        int idCounter = 6000;
 
-        System.out.println("[overwrite_contents] TEST registered, id=" + test.getID());
+        FluidType fent = reels$createFixed("fent", 0x4CC2A2, 0, 0, 0, EnumSymbol.NONE, idCounter++);
+        FluidType fent_radioactive = reels$createFixed("fent_radioactive", 0x00ffaa, 0, 0, 0, EnumSymbol.NONE, idCounter++);
+        FluidType fent_schrabatic = reels$createFixed("fent_schrabatic", 0x00d5ff, 0, 0, 0, EnumSymbol.NONE, idCounter++);
+
+
+        fent.addTraits(com.hbm.inventory.fluid.Fluids.LIQUID, com.hbm.inventory.fluid.Fluids.VISCOUS);
+        fent_radioactive.addTraits(com.hbm.inventory.fluid.Fluids.LIQUID, com.hbm.inventory.fluid.Fluids.VISCOUS);
+        fent_radioactive.addTraits(com.hbm.inventory.fluid.Fluids.LIQUID);
+        metaOrder.add(fent);
+        metaOrder.add(fent_radioactive);
+        metaOrder.add(fent_schrabatic);
+
     }
 }
