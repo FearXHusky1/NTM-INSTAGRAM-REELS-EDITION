@@ -1,6 +1,7 @@
 package com.reelsedition;
 
 import com.reelsedition.contents.machine.TileEntityFentReactor;
+import com.reelsedition.contents.recipes.AddonRecipes;
 import com.reelsedition.contents.registers.*;
 import com.reelsedition.proxy.CommonProxy;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -25,15 +26,24 @@ public class reelsedition {
 
     static {
         FluidRegistry.enableUniversalBucket();
-        AddonBlocks.preInit(); // move it here
     }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        proxy.preInit(e);
-        // remove AddonBlocks.preInit() from here
+        AddonBlocks.preInit();
         AddonFluids.preInit();
+        proxy.preInit(e);
         GameRegistry.registerTileEntity(TileEntityFentReactor.class, "reelsedition:fent_reactor");
+    }
+
+    @EventHandler
+    public void init(FMLInitializationEvent e) {
+        AddonFluids.init();
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent e) {
+        AddonRecipes.register();
     }
 
 }

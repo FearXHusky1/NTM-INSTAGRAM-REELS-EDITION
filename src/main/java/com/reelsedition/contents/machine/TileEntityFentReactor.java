@@ -18,6 +18,9 @@ public class TileEntityFentReactor extends TileEntityMachineBase implements ITic
     public static final long maxPower = 50000000;
     public int burnTime;
     public static final int maxBurnTime = 200;
+    public long fuelEnergy;
+    public static final long minFuelHE = 500_000_000;
+    public static final long maxFuelHE = 5_000_000_000L;
 
     public TileEntityFentReactor() { super(1); }
 
@@ -30,15 +33,21 @@ public class TileEntityFentReactor extends TileEntityMachineBase implements ITic
             if (s.getItem() == RegistryHandler.FENT_POWDER) {
                 inventory.extractItem(0, 1, false);
                 burnTime = maxBurnTime;
+                fuelEnergy = minFuelHE + (long)(world.rand.nextDouble() * (maxFuelHE - minFuelHE));
                 if (world.rand.nextInt(1000) == 0)
                     ExplosionNukeSmall.explode(world, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, ExplosionNukeSmall.PARAMS_MEDIUM);
                 markDirty();
                 world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
             }
         }
-        if (burnTime > 0) {
+        if (burnTime > 0 && fuelEnergy > 0) {
+            long targetThisTick = fuelEnergy / burnTime;
+            if (burnTime == 1) targetThisTick = fuelEnergy;
+            long room = maxPower - power;
+            long actual = Math.min(targetThisTick, room);
+            fuelEnergy -= targetThisTick;
+            power += actual;
             burnTime--;
-            power = Math.min(power + 500000, maxPower);
             markDirty();
             world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
         }
@@ -52,9 +61,9 @@ public class TileEntityFentReactor extends TileEntityMachineBase implements ITic
     @Override public long getMaxPower() { return maxPower; }
     @Override public String getDefaultName() { return "Fent Reactor"; }
 
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound n) { n.setLong("p", power); n.setInteger("b", burnTime); n.setTag("inv", inventory.serializeNBT()); return super.writeToNBT(n); }
-    @Override public void readFromNBT(NBTTagCompound n) { power = n.getLong("p"); burnTime = n.getInteger("b"); if (n.hasKey("inv")) inventory.deserializeNBT(n.getCompoundTag("inv")); super.readFromNBT(n); }
-    @Override public void serialize(io.netty.buffer.ByteBuf b) { b.writeLong(power); b.writeInt(burnTime); ByteBufUtils.writeTag(b, inventory.serializeNBT()); super.serialize(b); }
-    @Override public void deserialize(io.netty.buffer.ByteBuf b) { power = b.readLong(); burnTime = b.readInt(); inventory.deserializeNBT(ByteBufUtils.readTag(b)); super.deserialize(b); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound n) { n.setLong("p", power); n.setInteger("b", burnTime); n.setLong("fe", fuelEnergy); n.setTag("inv", inventory.serializeNBT()); return super.writeToNBT(n); }
+    @Override public void readFromNBT(NBTTagCompound n) { power = n.getLong("p"); burnTime = n.getInteger("b"); fuelEnergy = n.getLong("fe"); if (n.hasKey("inv")) inventory.deserializeNBT(n.getCompoundTag("inv")); super.readFromNBT(n); }
+    @Override public void serialize(io.netty.buffer.ByteBuf b) { b.writeLong(power); b.writeInt(burnTime); b.writeLong(fuelEnergy); ByteBufUtils.writeTag(b, inventory.serializeNBT()); super.serialize(b); }
+    @Override public void deserialize(io.netty.buffer.ByteBuf b) { power = b.readLong(); burnTime = b.readInt(); fuelEnergy = b.readLong(); inventory.deserializeNBT(ByteBufUtils.readTag(b)); super.deserialize(b); }
     @Override @SideOnly(Side.CLIENT) public AxisAlignedBB getRenderBoundingBox() { return new AxisAlignedBB(pos.add(-1,0,-1), pos.add(2,2,2)); }
 }

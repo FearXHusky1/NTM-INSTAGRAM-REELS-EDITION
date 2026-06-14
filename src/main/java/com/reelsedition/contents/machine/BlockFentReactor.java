@@ -50,7 +50,16 @@ public class BlockFentReactor extends BlockContainer implements ILookOverlay {
         int secs = (r.burnTime + fuel * TileEntityFentReactor.maxBurnTime) / 20;
         boolean on = r.burnTime > 0;
         List<String> l = new ArrayList<>();
-        l.add(TextFormatting.GREEN + "Burn: " + TextFormatting.WHITE + secs + "s" + (on ? TextFormatting.GREEN + "  10M HE/s" : ""));
+        if (on) {
+            long remainingTicks = Math.max(r.burnTime, 1);
+            long hePerSec = (r.fuelEnergy / remainingTicks) * 20;
+            String rateStr = hePerSec >= 1_000_000
+                ? String.format("%.1fM HE/s", hePerSec / 1_000_000.0)
+                : String.format("%.0fk HE/s", hePerSec / 1000.0);
+            l.add(TextFormatting.GREEN + "Burn: " + TextFormatting.WHITE + secs + "s" + TextFormatting.GREEN + "  " + rateStr);
+        } else {
+            l.add(TextFormatting.GREEN + "Burn: " + TextFormatting.WHITE + secs + "s");
+        }
         l.add(TextFormatting.GREEN + "Fuel: " + TextFormatting.WHITE + fuel + "x");
         ILookOverlay.printGeneric(e, "Fent Reactor", 0xFFCC00, 0x404040, l);
     }
