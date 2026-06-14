@@ -1,8 +1,8 @@
 [
   {
-    "modid": "reels",
-    "name": "G&G's Instagram Reels Addon",
-    "description": "The single most based NTM addon to ever exist, with ideas straight from instagram reels",
+    "modid": "reelsediton",
+    "name": "G&G's Instagram reelsediton Addon",
+    "description": "The single most based NTM addon to ever exist, with ideas straight from instagram reelsediton",
     "version": "1.0.0",
     "mcversion": "1.12.2",
     "dependencies": ["hbm"]

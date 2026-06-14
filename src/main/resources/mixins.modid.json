@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.gommer.overwrite_contents.mixin",
+  "package": "com.reelsediton.overwrite_contents.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [],
   "client": [
