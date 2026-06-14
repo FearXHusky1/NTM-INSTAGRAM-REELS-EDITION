@@ -12,13 +12,13 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class RegisterStuff {
-    static { OBJLoader.INSTANCE.addDomain("reels`"); }
+    static { OBJLoader.INSTANCE.addDomain("reelsedition"); }
 
     @SubscribeEvent public static void regModels(ModelRegistryEvent e) {
-        ModelLoader.setCustomModelResourceLocation(RegistryHandler.PHONE, 0, new ModelResourceLocation("reels:phone_reelsedition", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENT_POWDER, 0, new ModelResourceLocation("reels:fent_powder", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(RegistryHandler.WHITE_CREATURE, 0, new ModelResourceLocation("reels:white_creature", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.PHONE, 0, new ModelResourceLocation("reelsedition:phone_reels", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENT_POWDER, 0, new ModelResourceLocation("reelsedition:fent_powder", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.WHITE_CREATURE, 0, new ModelResourceLocation("reelsedition:white_creature", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(AddonBlocks.fent_reactor), 0, new ModelResourceLocation("reelsedition:fent_reactor", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENTRIFUGE_ELEMENT, 0, new ModelResourceLocation("reels:fentrifuge_element", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENTRIFUGE_ELEMENT, 0, new ModelResourceLocation("reelsedition:fentrifuge_element", "inventory"));
     }
 }

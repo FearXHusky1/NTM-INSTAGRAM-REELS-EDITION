@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gommer:items/fentrifuge_element"
+    "layer0": "reelsedition:items/fentrifuge_element"
   }
 }

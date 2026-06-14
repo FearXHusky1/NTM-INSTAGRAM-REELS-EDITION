@@ -13,8 +13,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @Mod(modid = reelsedition.MODID, name = reelsedition.NAME, version = reelsedition.VERSION, dependencies = "required-after:hbm")
 public class reelsedition {
 
-    public static final String MODID = "reels";
-    public static final String NAME = "G&G's Instagram reels Addon";
+    public static final String MODID = "reelsedition";
+    public static final String NAME = "G&G's Instagram Reels Addon";
     public static final String VERSION = "1.0.0";
 
     @SidedProxy(

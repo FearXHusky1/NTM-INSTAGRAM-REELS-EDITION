@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gommer:items/fent/fent_powder"
+    "layer0": "reelsedition:items/fent/fent_powder"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gommer:items/white_creature"
+    "layer0": "reelsedition:items/white_creature"
   }
 }

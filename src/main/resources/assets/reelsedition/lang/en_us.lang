@@ -1,6 +1,6 @@
-item.reelsediton.phone.name=Phone
-item.reelsediton.fent_powder.name=Fentanyl
-item.reelsediton.white_creature.name=White Creature Energy Drink
-tile.reelsediton.fent_reactor.name=Fent Reactor
-effect.reelsediton.communism=Communism
-item.reelsediton.fentrifuge_element.name=Fentrifuge Element
+item.reelsedition.phone.name=Phone
+item.reelsedition.fent_powder.name=Fentanyl
+item.reelsedition.white_creature.name=White Creature Energy Drink
+tile.reelsedition.fent_reactor.name=Fent Reactor
+effect.reelsedition.communism=Communism
+item.reelsedition.fentrifuge_element.name=Fentrifuge Element

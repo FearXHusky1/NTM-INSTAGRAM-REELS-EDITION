@@ -21,7 +21,7 @@ public class BlockFentReactor extends BlockContainer implements ILookOverlay {
     public BlockFentReactor(Material m, String n) {
         super(m);
         setTranslationKey(n);
-        setRegistryName("reels", n); // changed
+        setRegistryName("reelsedition", n); // changed
         setCreativeTab(CreativeTabs.MISC);
         AddonBlocks.ALL_BLOCKS.add(this);
     }
