@@ -1,4 +1,4 @@
-package com.reelsedition.contents.effects;
+package com.reelsedition.contents.effects.communism;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -11,7 +11,7 @@ public class CommunismEffect extends Potion {
 
     protected CommunismEffect() {
         super(false, 0xCC0000);
-        setRegistryName(new ResourceLocation("reels", "communism"));
+        setRegistryName(new ResourceLocation("reelsedition", "communism"));
         setPotionName("effect.reelsedition.communism");
     }
 

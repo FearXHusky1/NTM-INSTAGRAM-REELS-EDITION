@@ -1,7 +1,7 @@
-package com.reelsedionedition.client;
+package com.reelsedition.client.communism;
 
 import org.lwjgl.opengl.GL11;
-import com.reelsedition.contents.effects.CommunismEffect;
+import com.reelsedition.contents.effects.communism.CommunismEffect;
 import com.reelsedition.contents.registers.RegistryHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.*;
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class CommunismOverlay {
 
-    private static final ResourceLocation FUNNY = new ResourceLocation("reelsedition`", "textures/funny.png");
+    private static final ResourceLocation FUNNY = new ResourceLocation("reelsedition", "textures/funny.png");
     private static final float MAX_A = 0.5f;
     private static int frames;
     private static ISound sound;

@@ -20,5 +20,8 @@ public class RegisterStuff {
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.WHITE_CREATURE, 0, new ModelResourceLocation("reelsedition:white_creature", "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(AddonBlocks.fent_reactor), 0, new ModelResourceLocation("reelsedition:fent_reactor", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENTRIFUGE_ELEMENT, 0, new ModelResourceLocation("reelsedition:fentrifuge_element", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.BUG, 0, new ModelResourceLocation("reelsedition:bug", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.ORBITOCLAST, 0, new ModelResourceLocation("reelsedition:orbitoclast", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.EUPHEMIUM_ORBITOCLAST, 0, new ModelResourceLocation("reelsedition:orbitoclast_euphemium", "inventory"));
     }
 }

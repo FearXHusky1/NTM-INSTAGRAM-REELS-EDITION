@@ -62,6 +62,24 @@ public class AddonRecipes {
                 .inputItems(new RecipesCommon.ComparableStack(ModItems.glyphid_meat, 1))
                 .inputFluids(new FluidStack(Fluids.WATER, 10))
                 .outputFluids(new FluidStack(AddonFluids.BUG_PASTE, 100)));
+
+        net.minecraftforge.fml.common.registry.GameRegistry.addShapedRecipe(
+            new net.minecraft.util.ResourceLocation("reelsedition", "orbitoclast"),
+            null,
+            new ItemStack(RegistryHandler.ORBITOCLAST),
+            "T", "I", "P",
+            'T', ModItems.ingot_technetium,
+            'I', ModItems.ingot_titanium,
+            'P', ModItems.ingot_polymer);
+
+        net.minecraftforge.fml.common.registry.GameRegistry.addShapedRecipe(
+            new net.minecraft.util.ResourceLocation("reelsedition", "orbitoclast_euphemium"),
+            null,
+            new ItemStack(RegistryHandler.EUPHEMIUM_ORBITOCLAST),
+            "E", "S", "P",
+            'E', ModItems.ingot_euphemium,
+            'S', ModItems.ingot_schrabidium,
+            'P', ModItems.plate_euphemium);
     }
     // how the fuck do we get non-Generic recipes (assembler, chem, purex) to work?
 

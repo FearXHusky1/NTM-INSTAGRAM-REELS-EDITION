@@ -7,5 +7,23 @@
         "stream": true
       }
     ]
+  },
+  "hwaa": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "reelsedition:hwaa",
+        "stream": false
+      }
+    ]
+  },
+  "hwaa_high": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "reelsedition:hwaa_high",
+        "stream": false
+      }
+    ]
   }
 }

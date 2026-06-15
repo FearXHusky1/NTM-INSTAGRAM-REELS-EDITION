@@ -2,6 +2,7 @@ package com.reelsedition.contents.registers;
 
 import com.reelsedition.contents.registers.entity.Dresden;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.*;
 import net.minecraft.item.*;
@@ -12,7 +13,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import com.reelsedition.contents.effects.CommunismEffect;
+import com.reelsedition.contents.effects.communism.CommunismEffect;
+import com.reelsedition.contents.effects.lobotomy.LobotomisedEffect;
+import com.reelsedition.contents.effects.lobotomy.EuphemiumLobotomy;
 import com.reelsedition.reelsedition;
 import com.reelsedition.contents.registers.entity.Droid;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -47,6 +50,43 @@ public class RegistryHandler {
 
     public static final Item FENTRIFUGE_ELEMENT = new Item().setTranslationKey(reelsedition.MODID + ".fentrifuge_element").setRegistryName("fentrifuge_element");
 
+    public static final Item BUG = new ItemFood(1, 4f, false) {{ setTranslationKey(reelsedition.MODID + ".bug"); setRegistryName("bug"); setAlwaysEdible(); setMaxStackSize(64); }};
+
+    public static final SoundEvent HWAA = new SoundEvent(new ResourceLocation("reelsedition", "hwaa")).setRegistryName(new ResourceLocation("reelsedition", "hwaa"));
+    public static final SoundEvent HWAA_HIGH = new SoundEvent(new ResourceLocation("reelsedition", "hwaa_high")).setRegistryName(new ResourceLocation("reelsedition", "hwaa_high"));
+
+    public static final Item ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".orbitoclast"); setRegistryName("orbitoclast"); setMaxStackSize(1); setFull3D();
+    } @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
+        if (!attacker.world.isRemote) {
+            PotionEffect eff = new PotionEffect(LobotomisedEffect.INSTANCE, 32767, 0, false, false);
+            eff.getCurativeItems().clear();
+            target.addPotionEffect(eff);
+            s.shrink(1);
+        }
+        return true;
+    } @Override public ActionResult<ItemStack> onItemRightClick(World w, EntityPlayer p, EnumHand h) {
+        if (!w.isRemote) {
+            PotionEffect eff = new PotionEffect(LobotomisedEffect.INSTANCE, 32767, 0, false, false);
+            eff.getCurativeItems().clear();
+            p.addPotionEffect(eff);
+            p.getHeldItem(h).shrink(1);
+        }
+        return new ActionResult<>(EnumActionResult.SUCCESS, p.getHeldItem(h));
+    }};
+
+    public static final Item EUPHEMIUM_ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".orbitoclast_euphemium"); setRegistryName("orbitoclast_euphemium"); setMaxStackSize(1); setFull3D();
+    } @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
+        if (!attacker.world.isRemote) {
+            if (target instanceof EntityPlayer) EuphemiumLobotomy.mark((EntityPlayer) target);
+            else { PotionEffect eff = new PotionEffect(LobotomisedEffect.INSTANCE, 32767, 0, false, false); eff.getCurativeItems().clear(); target.addPotionEffect(eff); }
+            s.shrink(1);
+        }
+        return true;
+    } @Override public ActionResult<ItemStack> onItemRightClick(World w, EntityPlayer p, EnumHand h) {
+        if (!w.isRemote) { EuphemiumLobotomy.mark(p); p.getHeldItem(h).shrink(1); }
+        return new ActionResult<>(EnumActionResult.SUCCESS, p.getHeldItem(h));
+    }};
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> e) {
         System.out.println("Registering blocks: " + AddonBlocks.ALL_BLOCKS.size());
@@ -66,10 +106,10 @@ public class RegistryHandler {
             } : new ItemBlock(b);
             ib.setRegistryName(b.getRegistryName()); e.getRegistry().register(ib);
         }
-        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT);
+        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT); e.getRegistry().register(BUG); e.getRegistry().register(ORBITOCLAST); e.getRegistry().register(EUPHEMIUM_ORBITOCLAST);
     }
-    @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); }
-    @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); }
+    @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); e.getRegistry().register(LobotomisedEffect.INSTANCE); }
+    @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); e.getRegistry().register(HWAA); e.getRegistry().register(HWAA_HIGH); }
 
 
     @SubscribeEvent
