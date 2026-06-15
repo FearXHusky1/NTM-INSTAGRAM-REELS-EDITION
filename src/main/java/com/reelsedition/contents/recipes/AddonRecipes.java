@@ -1,5 +1,5 @@
 package com.reelsedition.contents.recipes;
-
+import com.hbm.inventory.recipes.anvil.AnvilRecipes;
 import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.reelsedition.contents.AddonFluids;
 import com.reelsedition.contents.registers.AddonBlocks;
@@ -80,7 +80,15 @@ public class AddonRecipes {
             'E', ModItems.ingot_euphemium,
             'S', ModItems.ingot_schrabidium,
             'P', ModItems.plate_euphemium);
+
+        ChemicalPlantRecipes.INSTANCE.register(new GenericRecipe("reelsedition.bug_paste_2")
+                .setupNamed(60, 15000).setNameWrapper("Bug Paste_2")
+                .setIcon(RegistryHandler.BUG)
+                .inputFluids(new FluidStack(AddonFluids.BUG_PASTE, 10))
+                .outputItems(new ItemStack(RegistryHandler.BUG, 1)));
+
+
     }
-    // how the fuck do we get non-Generic recipes (assembler, chem, purex) to work?
+
 
 }

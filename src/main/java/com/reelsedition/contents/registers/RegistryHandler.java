@@ -51,9 +51,12 @@ public class RegistryHandler {
     public static final Item FENTRIFUGE_ELEMENT = new Item().setTranslationKey(reelsedition.MODID + ".fentrifuge_element").setRegistryName("fentrifuge_element");
 
     public static final Item BUG = new ItemFood(1, 4f, false) {{ setTranslationKey(reelsedition.MODID + ".bug"); setRegistryName("bug"); setAlwaysEdible(); setMaxStackSize(64); }};
+    public static final Item BUG_WAFER = new ItemFood(1, 4f, false) {{ setTranslationKey(reelsedition.MODID + ".bug_wafer"); setRegistryName("bug_wafer"); setAlwaysEdible(); setMaxStackSize(64); }};
 
     public static final SoundEvent HWAA = new SoundEvent(new ResourceLocation("reelsedition", "hwaa")).setRegistryName(new ResourceLocation("reelsedition", "hwaa"));
     public static final SoundEvent HWAA_HIGH = new SoundEvent(new ResourceLocation("reelsedition", "hwaa_high")).setRegistryName(new ResourceLocation("reelsedition", "hwaa_high"));
+
+    public static final Item ZION_CIRCUIT = new Item().setTranslationKey(reelsedition.MODID + ".ziontech_circuit").setRegistryName("ziontech_circuit").setMaxStackSize(64);
 
     public static final Item ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".orbitoclast"); setRegistryName("orbitoclast"); setMaxStackSize(1); setFull3D();
     } @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
