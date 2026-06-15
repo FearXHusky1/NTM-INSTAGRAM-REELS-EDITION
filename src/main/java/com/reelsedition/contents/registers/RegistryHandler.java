@@ -51,7 +51,7 @@ public class RegistryHandler {
     public static final Item FENTRIFUGE_ELEMENT = new Item().setTranslationKey(reelsedition.MODID + ".fentrifuge_element").setRegistryName("fentrifuge_element");
 
     public static final Item BUG = new ItemFood(1, 4f, false) {{ setTranslationKey(reelsedition.MODID + ".bug"); setRegistryName("bug"); setAlwaysEdible(); setMaxStackSize(64); }};
-    public static final Item BUG_WAFER = new ItemFood(1, 4f, false) {{ setTranslationKey(reelsedition.MODID + ".bug_wafer"); setRegistryName("bug_wafer"); setAlwaysEdible(); setMaxStackSize(64); }};
+    public static final Item BUG_WAFER = new ItemFood(1, 9f, false) {{ setTranslationKey(reelsedition.MODID + ".bug_wafer"); setRegistryName("bug_wafer"); setAlwaysEdible(); setMaxStackSize(64); }};
 
     public static final SoundEvent HWAA = new SoundEvent(new ResourceLocation("reelsedition", "hwaa")).setRegistryName(new ResourceLocation("reelsedition", "hwaa"));
     public static final SoundEvent HWAA_HIGH = new SoundEvent(new ResourceLocation("reelsedition", "hwaa_high")).setRegistryName(new ResourceLocation("reelsedition", "hwaa_high"));
@@ -109,7 +109,7 @@ public class RegistryHandler {
             } : new ItemBlock(b);
             ib.setRegistryName(b.getRegistryName()); e.getRegistry().register(ib);
         }
-        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT); e.getRegistry().register(BUG); e.getRegistry().register(ORBITOCLAST); e.getRegistry().register(EUPHEMIUM_ORBITOCLAST);
+        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT); e.getRegistry().register(BUG); e.getRegistry().register(ORBITOCLAST); e.getRegistry().register(EUPHEMIUM_ORBITOCLAST); e.getRegistry().register(ZION_CIRCUIT);e.getRegistry().register(BUG_WAFER);
     }
     @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); e.getRegistry().register(LobotomisedEffect.INSTANCE); }
     @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); e.getRegistry().register(HWAA); e.getRegistry().register(HWAA_HIGH); }
