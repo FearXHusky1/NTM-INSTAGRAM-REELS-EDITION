@@ -66,7 +66,9 @@ public class RegistryHandler {
         @Override
         @SideOnly(Side.CLIENT)
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-            tooltip.add(net.minecraft.client.resources.I18n.format(this.getTranslationKey() + ".desc"));
+            tooltip.add(TextFormatting.GRAY + "The latest and greatest");
+            tooltip.add(TextFormatting.GRAY + "from Tel-Aviv's top scientists.");
+            tooltip.add(TextFormatting.UNDERLINE + "(Preinstalled with SystemD)");
         }
     }.setTranslationKey(reelsedition.MODID + ".ziontech_circuit").setRegistryName("ziontech_circuit").setMaxStackSize(64);
 
