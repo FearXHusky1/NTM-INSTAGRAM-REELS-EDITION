@@ -4,6 +4,7 @@ import com.reelsedition.contents.machine.TileEntityFentReactor;
 import com.reelsedition.contents.recipes.AddonRecipes;
 import com.reelsedition.contents.registers.*;
 import com.reelsedition.init.AddonFluidTraits;
+import com.reelsedition.init.recipes.AddonSolderingRecipes;
 import com.reelsedition.proxy.CommonProxy;
 import com.reelsedition.init.recipes.AddonCompressorRecipes;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -65,7 +66,7 @@ public class reelsedition {
         //AddonArcWelderRecipes.register();
         //AddonDFCRecipes.register();
         //AddonSmeltingRecipes.register();
-        //AddonSolderingRecipes.register();
+        AddonSolderingRecipes.register();
         //AddonMixerRecipes.register();
         AddonCompressorRecipes.register();
        //AddonPlasmaForgeRecipes.register();

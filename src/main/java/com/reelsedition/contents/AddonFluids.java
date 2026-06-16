@@ -30,11 +30,13 @@ public class AddonFluids {
 	public static FluidType FENT_RAD;
 	public static FluidType FENT_SCHRAB;
 	public static FluidType BUG_PASTE;
+	public static FluidType STEM_CELLS;
 	public static void init() {
 		// Basic fluid and trait initialization (Don't code in custom traits here, i think it won't work)
 		FENT = new AddonFluidType("fent",0x4CC2A2,0,0,0,EnumSymbol.NONE).addTraits(LIQUID,VISCOUS);
 		FENT_RAD = new AddonFluidType("fent_radioactive",0x00ffaa,0,0,0,EnumSymbol.NONE).addTraits(LIQUID,VISCOUS,new FT_VentRadiation(0.01f));
 		FENT_SCHRAB = new AddonFluidType("fent_schrabatic",0x00d5ff,0,0,0,EnumSymbol.NONE).addTraits(LIQUID,VISCOUS,new FT_VentRadiation(0.08f));
 		BUG_PASTE = new AddonFluidType("bug_paste",0x003d10,0,0,0,EnumSymbol.NONE).addTraits(LIQUID,VISCOUS,DELICIOUS);
+		STEM_CELLS = new AddonFluidType("stem_cells",0xFFF7F7, 0, 0,0, EnumSymbol.NONE).addTraits(LIQUID,VISCOUS);
 	}
 }
