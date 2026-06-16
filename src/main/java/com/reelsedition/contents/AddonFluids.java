@@ -33,6 +33,7 @@ public class AddonFluids {
 	public static FluidType FENT_SCHRAB;
 	public static FluidType BUG_PASTE;
 	public static FluidType STEM_CELLS;
+	public static FluidType ZYKLON;
 	public static void init() {
 		// Basic fluid and trait initialization (Don't code in custom traits here, i think it won't work)
 		FENT = new AddonFluidType("fent",0x4CC2A2,0,0,0,EnumSymbol.NONE).addTraits(LIQUID,VISCOUS);
@@ -41,6 +42,6 @@ public class AddonFluids {
 		BUG_PASTE = new AddonFluidType("bug_paste",0x003d10,0,0,0,EnumSymbol.NONE).addTraits(LIQUID,VISCOUS,DELICIOUS);
 		STEM_CELLS = new AddonFluidType("stem_cells",0xFFF7F7, 0, 0,0, EnumSymbol.NONE).addTraits(LIQUID,VISCOUS);
 		//how do we make a better poison extreme trait?
-		FENT = new AddonFluidType("zyklon",0x4CC2A2,0,0,0,EnumSymbol.NONE).addTraits(GASEOUS, new FT_Polluting().release(PollutionHandler.PollutionType.POISON, POISON_EXTREME));
+		ZYKLON = new AddonFluidType("zyklon",0x4CC2A2,0,0,0,EnumSymbol.NONE).addTraits(GASEOUS, new FT_Polluting().release(PollutionHandler.PollutionType.POISON, POISON_EXTREME));
 	}
 }

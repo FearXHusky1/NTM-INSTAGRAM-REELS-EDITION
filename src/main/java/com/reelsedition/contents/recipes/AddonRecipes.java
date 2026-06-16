@@ -1,4 +1,5 @@
 package com.reelsedition.contents.recipes;
+import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
 import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.reelsedition.contents.AddonFluids;
@@ -88,7 +89,22 @@ public class AddonRecipes {
                 .outputItems(new ItemStack(RegistryHandler.BUG, 1)));
 
 
+        ChemicalPlantRecipes.INSTANCE.register(
+                new GenericRecipe("reelsedition.fent_laced_copper_wire")
+                        .setupNamed(20, 200L)
+                        .setNameWrapper("Fent-laced Copper Wire")
+                        .setIcon(RegistryHandler.FENT_LACED_COPPER_WIRE)
+                        .inputFluids(new FluidStack(AddonFluids.FENT, 50))
+
+                        .inputItems(new RecipesCommon.ComparableStack(ModItems.wire_fine, 12, Mats.MAT_COPPER.id))
+                        .outputItems(new ItemStack(RegistryHandler.FENT_LACED_COPPER_WIRE, 12))
+        );
+
+
+
     }
+
+
 
 
 }

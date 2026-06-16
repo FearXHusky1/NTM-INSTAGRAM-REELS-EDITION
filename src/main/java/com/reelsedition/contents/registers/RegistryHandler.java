@@ -62,6 +62,14 @@ public class RegistryHandler {
     public static final SoundEvent HWAA = new SoundEvent(new ResourceLocation("reelsedition", "hwaa")).setRegistryName(new ResourceLocation("reelsedition", "hwaa"));
     public static final SoundEvent HWAA_HIGH = new SoundEvent(new ResourceLocation("reelsedition", "hwaa_high")).setRegistryName(new ResourceLocation("reelsedition", "hwaa_high"));
 
+    public static final Item FENT_LACED_COPPER_WIRE = new Item() {
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+            tooltip.add(TextFormatting.GRAY + "Covered in 99% Fentanyl!");
+        }
+    }.setTranslationKey(reelsedition.MODID + ".fent_laced_copper_wire").setRegistryName("fent_laced_copper_wire");
+
     public static final Item ZION_CIRCUIT = new Item() {
         @Override
         @SideOnly(Side.CLIENT)
@@ -133,7 +141,7 @@ public class RegistryHandler {
             ib.setRegistryName(b.getRegistryName()); e.getRegistry().register(ib);
         }
         e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT); e.getRegistry().register(BUG); e.getRegistry().register(ORBITOCLAST); e.getRegistry().register(EUPHEMIUM_ORBITOCLAST); e.getRegistry().register(ZION_CIRCUIT);e.getRegistry().register(BUG_WAFER);e.getRegistry().register(FLYOD_CIRCUIT
-        );
+        ); e.getRegistry().register(FENT_LACED_COPPER_WIRE);
     }
     @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); e.getRegistry().register(LobotomisedEffect.INSTANCE); }
     @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); e.getRegistry().register(HWAA); e.getRegistry().register(HWAA_HIGH); }

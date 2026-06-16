@@ -58,7 +58,8 @@ public class AddonSolderingRecipes {
                         new ComparableStack(ModItems.circuit, 32, EnumCircuitType.PCB),
                         new ComparableStack(ModItems.ingot_pvc, 2)
                 },
-                new AStack[] {new OreDictStack(PB.wireFine(), 12)}));
+                new AStack[] {new ComparableStack(RegistryHandler.FENT_LACED_COPPER_WIRE, 12)}
+        ));
 
     }
 }
