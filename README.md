@@ -1,3 +1,1 @@
-built off this https://github.com/Quantum-Studios-MC/NTMCE-Addon-Template
-
-i dont know how to code so consider any progress a miricle
+Greatest NTM Addon of all time, Space has nothing on the pure, awesomeness that came out of our heads.
