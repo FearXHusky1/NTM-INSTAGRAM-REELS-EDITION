@@ -1,6 +1,7 @@
 package com.reelsedition.contents.machine;
 
 import com.reelsedition.contents.registers.*;
+import com.reelsedition.reelsedition;
 import com.hbm.blocks.ILookOverlay;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -20,7 +21,7 @@ public class BlockFentReactor extends BlockContainer implements ILookOverlay {
 
     public BlockFentReactor(Material m, String n) {
         super(m);
-        setTranslationKey(n);
+        setTranslationKey(reelsedition.MODID + "." + n);
         setRegistryName("reelsedition", n); // changed
         setCreativeTab(CreativeTabs.MISC);
         AddonBlocks.ALL_BLOCKS.add(this);
