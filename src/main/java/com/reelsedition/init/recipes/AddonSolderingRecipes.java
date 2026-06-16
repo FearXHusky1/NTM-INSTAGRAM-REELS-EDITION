@@ -1,5 +1,7 @@
 package com.reelsedition.init.recipes;
 
+import com.hbm.inventory.OreDictManager;
+import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;
@@ -10,7 +12,6 @@ import com.hbm.inventory.recipes.SolderingRecipes.SolderingRecipe;
 import com.hbm.items.ItemEnums.EnumCircuitType;
 import com.hbm.items.ModItems;
 
-import com.reelsedition.contents.AddonFluids;
 import com.reelsedition.contents.registers.RegistryHandler;
 import net.minecraft.item.ItemStack;
 
@@ -40,24 +41,6 @@ public class AddonSolderingRecipes {
 
 
         ));
-        recipes.add(new SolderingRecipe(
-                new ItemStack(RegistryHandler.ZION_CIRCUIT),
-
-                350,
-                5000,
-                new FluidStack(AddonFluids.STEM_CELLS, 1000),
-                new AStack[]{
-
-                        new ComparableStack(ModItems.circuit, 16, EnumCircuitType.CHIP),
-                        new ComparableStack(ModItems.circuit, 32, EnumCircuitType.CAPACITOR),
-                        new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP_BISMOID),
-                },
-                new AStack[]{
-                        new ComparableStack(ModItems.circuit, 32, EnumCircuitType.PCB),
-                        new ComparableStack(ModItems.ingot_pvc, 2)
-                },
-                new AStack[] {new OreDictStack(PB.wireFine(), 12)}));
-
 
     }
 }
