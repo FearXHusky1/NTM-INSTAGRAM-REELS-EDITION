@@ -1,17 +1,22 @@
 package com.reelsedition.contents.registers;
 
 import com.reelsedition.contents.registers.entity.Dresden;
+import com.reelsedition.contents.registers.entity.YN;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.*;
 import net.minecraft.item.*;
 import net.minecraft.potion.*;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.reelsedition.contents.effects.communism.CommunismEffect;
@@ -23,9 +28,11 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+import com.hbm.world.biome.BiomeGenCraterBase;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
+import com.reelsedition.contents.events.RaidData;
 
 @Mod.EventBusSubscriber(modid = reelsedition.MODID)
 public class RegistryHandler {
@@ -108,7 +115,7 @@ public class RegistryHandler {
         return new ActionResult<>(EnumActionResult.SUCCESS, p.getHeldItem(h));
     }};
 
-    public static final Item EUPHEMIUM_ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".orbitoclast_euphemium"); setRegistryName("orbitoclast_euphemium"); setMaxStackSize(1); setFull3D();
+    public static final Item EUPHEMIUM_ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".euphemium_orbitoclast"); setRegistryName("euphemium_orbitoclast"); setMaxStackSize(1); setFull3D();
     } @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
         if (!attacker.world.isRemote) {
             if (target instanceof EntityPlayer) EuphemiumLobotomy.mark((EntityPlayer) target);
@@ -120,6 +127,8 @@ public class RegistryHandler {
         if (!w.isRemote) { EuphemiumLobotomy.mark(p); p.getHeldItem(h).shrink(1); }
         return new ActionResult<>(EnumActionResult.SUCCESS, p.getHeldItem(h));
     }};
+
+
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> e) {
@@ -141,7 +150,7 @@ public class RegistryHandler {
             ib.setRegistryName(b.getRegistryName()); e.getRegistry().register(ib);
         }
         e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT); e.getRegistry().register(BUG); e.getRegistry().register(ORBITOCLAST); e.getRegistry().register(EUPHEMIUM_ORBITOCLAST); e.getRegistry().register(ZION_CIRCUIT);e.getRegistry().register(BUG_WAFER);e.getRegistry().register(FLYOD_CIRCUIT
-        ); e.getRegistry().register(FENT_LACED_COPPER_WIRE);
+        ); e.getRegistry().register(FENT_LACED_COPPER_WIRE);e.getRegistry().register(MIXTAPE);
     }
     @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); e.getRegistry().register(LobotomisedEffect.INSTANCE); }
     @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); e.getRegistry().register(HWAA); e.getRegistry().register(HWAA_HIGH); }
@@ -155,15 +164,111 @@ public class RegistryHandler {
                         .id(new ResourceLocation("reelsedition", "droid"), 1)
                         .name("droid")
                         .tracker(80, 3, true)
+                        .egg(0x1a1a2e, 0xff0000)
+                        .spawn(EnumCreatureType.MONSTER, 1, 1, 1,
+                                BiomeGenCraterBase.craterBiome,
+                                BiomeGenCraterBase.craterInnerBiome,
+                                BiomeGenCraterBase.craterOuterBiome
+                        )
+                        .build()
+        );
+
+        event.getRegistry().register(
+                EntityEntryBuilder.create()
+                        .entity(YN.class)
+                        .id(new ResourceLocation("reelsedition", "yn"), 2)
+                        .name("yn")
+                        .tracker(80, 3, true)
+                        .egg(0x1a1a3e, 0xff0000)
+                        .spawn(EnumCreatureType.MONSTER, 1, 1, 1,
+                                BiomeGenCraterBase.craterBiome,
+                                BiomeGenCraterBase.craterInnerBiome,
+                                BiomeGenCraterBase.craterOuterBiome
+                        )
                         .build()
         );
         event.getRegistry().register(
                 EntityEntryBuilder.create()
                         .entity(Dresden.class)
-                        .id(new ResourceLocation("reelsedition", "dresden"), 1)
+                        .id(new ResourceLocation("reelsedition", "dresden"), 3)
                         .name("dresden")
                         .tracker(80, 3, true)
                         .build()
         );
     }
+    public static final Item MIXTAPE = new Item() {
+
+        {
+            setTranslationKey(reelsedition.MODID + ".mixtape");
+            setRegistryName("mixtape");
+            setMaxStackSize(1);
+            setFull3D();
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addInformation(ItemStack stack, @Nullable World worldIn,
+                                   List<String> tooltip, ITooltipFlag flagIn) {
+            tooltip.add(TextFormatting.GRAY +
+                    "The latest and greatest hits from Dequan Oaheeks and Swichyion O'Block");
+        }
+
+        @Override
+        public ActionResult<ItemStack> onItemRightClick(World world,
+                                                        EntityPlayer player,
+                                                        EnumHand hand) {
+
+            ItemStack stack = player.getHeldItem(hand);
+
+            if (!world.isRemote) {
+                startRaid(world, player);
+
+                if (!player.capabilities.isCreativeMode) {
+                    stack.shrink(1);
+                }
+            }
+
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        }
+    };
+
+
+    public static RaidData currentRaid;
+
+    private static void startRaid(World world, EntityPlayer player) {
+
+        currentRaid = new RaidData();
+
+        Random rand = world.rand;
+
+        for (int i = 0; i < 5; i++) {
+
+            YN yn = new YN(world);
+
+            double angle = rand.nextDouble() * Math.PI * 2;
+            double dist = 10 + rand.nextDouble() * 10;
+
+            double x = player.posX + Math.cos(angle) * dist;
+            double z = player.posZ + Math.sin(angle) * dist;
+
+            yn.setLocationAndAngles(
+                    x,
+                    player.posY,
+                    z,
+                    rand.nextFloat() * 360F,
+                    0F
+            );
+
+            world.spawnEntity(yn);
+
+            currentRaid.addRaider(yn);
+        }
+
+        currentRaid.setInitialSize(currentRaid.getRaiders().size());
+
+        if (player instanceof EntityPlayerMP) {
+            currentRaid.addPlayer((EntityPlayerMP) player);
+        }
+    }
+
 }

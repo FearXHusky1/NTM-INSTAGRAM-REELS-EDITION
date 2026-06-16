@@ -1,5 +1,14 @@
 package com.reelsedition.contents.registers.entity;
-
+import com.reelsedition.contents.registers.RegistryHandler;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.world.*;
+import com.hbm.items.ModItems;
 import com.hbm.entity.projectile.EntityBulletBeamBase;
 import com.hbm.items.weapon.sedna.BulletConfig;
 import com.hbm.util.DamageResistanceHandler;
@@ -12,22 +21,13 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
+import net.minecraft.entity.IEntityLivingData;
 import static java.lang.Math.abs;
-import net.minecraft.world.BossInfo;
-import net.minecraft.world.BossInfoServer;
 
-public class Droid extends EntityMob implements IRangedAttackMob {
+public class YN extends EntityMob implements IRangedAttackMob {
 
-    public static final BulletConfig DROID_LASER = new BulletConfig()
-            .setBeam()
-            .setDamage(5.0F)
-            .setLife(4)
-            .setImpactsEntities(true)
-            .setupDamageClass(DamageResistanceHandler.DamageClass.LASER)
-            .setOnBeamImpact(BulletConfig.LAMBDA_STANDARD_BEAM_HIT);
 
-    public Droid(World world) {
+    public YN(World world) {
         super(world);
         this.setSize(0.6F, 1.8F);
     }
@@ -57,19 +57,21 @@ public class Droid extends EntityMob implements IRangedAttackMob {
         }
 
 
-        EntityBulletBeamBase laser = new EntityBulletBeamBase(this, DROID_LASER, 2.0F, 0F, 0, 0, 0);
-        this.world.spawnEntity(laser);
-
-        this.rotationYaw = prevYaw;
-        this.rotationPitch = prevPitch;
     }
 
-    @Override
-    public void setSwingingArms(boolean swinging) {}
+    private boolean swingingArms = false;
 
     @Override
+    public void setSwingingArms(boolean swinging) {
+        this.swingingArms = swinging;
+    }
+
+    public boolean isSwingingArms() {
+        return swingingArms;
+    }
+    @Override
     public String getName() {
-        return "George Droid";
+        return "YN";
     }
 
     @Override
@@ -87,36 +89,20 @@ public class Droid extends EntityMob implements IRangedAttackMob {
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityVillager.class, true));
     }
 
-    private final BossInfoServer bossInfo = new BossInfoServer(
-            new TextComponentString("George Droid"), // Name of the boss
-            BossInfo.Color.RED,                      // Color of the bar
-            BossInfo.Overlay.PROGRESS                // Style of the bar
-    );
-
-    @Override
-    public void addTrackingPlayer(EntityPlayerMP player) {
-        super.addTrackingPlayer(player);
-        this.bossInfo.addPlayer(player);
-    }
-
-    @Override
-    public void removeTrackingPlayer(EntityPlayerMP player) {
-        super.removeTrackingPlayer(player);
-        this.bossInfo.removePlayer(player);
-    }
-
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-        this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
-    }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(400.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(2.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(15.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(5.0D);
+    }
+    @Override
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingdata) {
+        this.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ModItems.gun_uzi));
+        return super.onInitialSpawn(difficulty, livingdata);
     }
 }
+
+

@@ -27,5 +27,8 @@ public class RegisterStuff {
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.ZION_CIRCUIT, 0, new ModelResourceLocation("reelsedition:ziontech_circuit", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FLYOD_CIRCUIT, 0, new ModelResourceLocation("reelsedition:floydtech_circuit", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENT_LACED_COPPER_WIRE, 0, new ModelResourceLocation("reelsedition:fent_laced_copper_wire", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.MIXTAPE, 0, new ModelResourceLocation("reelsedition:mixtape", "inventory"));
     }
+
+
 }

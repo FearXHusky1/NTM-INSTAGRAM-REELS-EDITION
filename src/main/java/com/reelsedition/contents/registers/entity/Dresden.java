@@ -1,11 +1,38 @@
 package com.reelsedition.contents.registers.entity;
+import com.reelsedition.contents.registers.RegistryHandler;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-public class Dresden extends EntityMob {
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.world.*;
+
+import com.hbm.entity.projectile.EntityBulletBeamBase;
+import com.hbm.items.weapon.sedna.BulletConfig;
+import com.hbm.util.DamageResistanceHandler;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
+
+import static java.lang.Math.abs;
+
+public class Dresden extends EntityMob implements IRangedAttackMob {
+
+    public static final BulletConfig DROID_LASER = new BulletConfig()
+            .setBeam()
+            .setDamage(5.0F)
+            .setLife(4)
+            .setImpactsEntities(true)
+            .setupDamageClass(DamageResistanceHandler.DamageClass.LASER)
+            .setOnBeamImpact(BulletConfig.LAMBDA_STANDARD_BEAM_HIT);
 
     public Dresden(World world) {
         super(world);
@@ -13,6 +40,39 @@ public class Dresden extends EntityMob {
     }
 
 
+    @Override
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) { //horrible attempt to fix the laser rendering at correct target i turn left now goodluck everybody else
+        double dx = target.posX - this.posX;
+        double dy = target.posY + target.getEyeHeight() - (this.posY + this.getEyeHeight());
+        double dz = target.posZ - this.posZ;
+        double eye = abs(this.posY - this.getEyeHeight());
+        double hDist = Math.sqrt(dx * dx + dz * dz);
+
+        float yaw = (float)(Math.toDegrees(Math.atan2(dz, dx)) - 90);
+        float pitch = (float)Math.toDegrees(Math.atan2(dy, hDist));
+
+        float prevYaw = this.rotationYaw;
+        float prevPitch = this.rotationPitch;
+        this.rotationYaw = yaw;
+        this.rotationPitch = pitch;
+
+        //george droid liberal oblitierator hotfix, there might be a better way to fix this, maybe just invert the dy stuff?
+        //also this does not fix the rendering, idk if this even effects it at all
+        if (1 != 0)
+        {
+            this.rotationPitch = -pitch;
+        }
+
+
+        EntityBulletBeamBase laser = new EntityBulletBeamBase(this, DROID_LASER, 2.0F, 0F, 0, 0, 0);
+        this.world.spawnEntity(laser);
+
+        this.rotationYaw = prevYaw;
+        this.rotationPitch = prevPitch;
+    }
+
+    @Override
+    public void setSwingingArms(boolean swinging) {}
 
     @Override
     public String getName() {
@@ -22,7 +82,7 @@ public class Dresden extends EntityMob {
     @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIAttackMelee(this, 1.2D, true));
+        this.tasks.addTask(1, new EntityAIAttackRanged(this, 1.0D, 5, 5, 15.0F));
         this.tasks.addTask(2, new EntityAIWatchClosest(this, EntityPlayer.class, 25.0F));
         this.tasks.addTask(3, new EntityAIWatchClosest(this, EntityMob.class, 25.0F));
         this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityVillager.class, 25.0F));
@@ -34,13 +94,15 @@ public class Dresden extends EntityMob {
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityVillager.class, true));
     }
 
+
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(2.0D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50.0D);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(5.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(8.0D);
     }
+
 }
+
