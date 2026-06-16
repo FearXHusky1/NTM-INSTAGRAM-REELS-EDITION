@@ -2,6 +2,7 @@ package com.reelsedition.contents.registers;
 
 import com.reelsedition.contents.registers.entity.Dresden;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.*;
@@ -20,6 +21,11 @@ import com.reelsedition.reelsedition;
 import com.reelsedition.contents.registers.entity.Droid;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = reelsedition.MODID)
 public class RegistryHandler {
@@ -56,9 +62,25 @@ public class RegistryHandler {
     public static final SoundEvent HWAA = new SoundEvent(new ResourceLocation("reelsedition", "hwaa")).setRegistryName(new ResourceLocation("reelsedition", "hwaa"));
     public static final SoundEvent HWAA_HIGH = new SoundEvent(new ResourceLocation("reelsedition", "hwaa_high")).setRegistryName(new ResourceLocation("reelsedition", "hwaa_high"));
 
-    public static final Item ZION_CIRCUIT = new Item().setTranslationKey(reelsedition.MODID + ".ziontech_circuit").setRegistryName("ziontech_circuit").setMaxStackSize(64);
-    public static final Item FLYOD_CIRCUIT = new Item().setTranslationKey(reelsedition.MODID + ".floydtech_circuit").setRegistryName("floydtech_circuit").setMaxStackSize(64);
-
+    public static final Item ZION_CIRCUIT = new Item() {
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+            tooltip.add(TextFormatting.GRAY + "The latest and greatest");
+            tooltip.add(TextFormatting.GRAY + "from Tel-Aviv's top scientists.");
+            tooltip.add(TextFormatting.UNDERLINE + "(Preinstalled with SystemD)");
+        }
+    }.setTranslationKey(reelsedition.MODID + ".ziontech_circuit").setRegistryName("ziontech_circuit").setMaxStackSize(64);
+    public static final Item FLYOD_CIRCUIT = new Item() {
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+            tooltip.add(TextFormatting.GRAY + "'This is our only solution");
+            tooltip.add(TextFormatting.GRAY + "to solving the fentanyl crisis");
+            tooltip.add(TextFormatting.GRAY + "in the United States'");
+            tooltip.add(TextFormatting.RED + "- Donald J. Trump");
+        }
+    }.setTranslationKey(reelsedition.MODID + ".floydtech_circuit").setRegistryName("floydtech_circuit").setMaxStackSize(64);
     public static final Item ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".orbitoclast"); setRegistryName("orbitoclast"); setMaxStackSize(1); setFull3D();
     } @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
         if (!attacker.world.isRemote) {
