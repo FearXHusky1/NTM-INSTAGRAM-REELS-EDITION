@@ -150,9 +150,8 @@ public class AddonRecipes {
                         .outputFluids(new FluidStack(AddonFluids.STEM_CELLS, 500))
         );
 
-        //irrad fent
         OutgasserRecipes.recipes.put(
-                new RecipesCommon.ComparableStack(ModItems.fluid_icon, 1, AddonFluids.FENT.getID()),
+                new RecipesCommon.ComparableStack(RegistryHandler.FENT_POWDER),
                 new OutgasserRecipes.OutgasserRecipe(null, new FluidStack(AddonFluids.FENT_RAD, 1000))
         );
 
