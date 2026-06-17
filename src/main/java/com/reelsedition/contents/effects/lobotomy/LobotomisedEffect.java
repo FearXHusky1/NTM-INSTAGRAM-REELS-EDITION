@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.MobEffects;
 import net.minecraft.potion.*;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -27,15 +28,18 @@ public class LobotomisedEffect extends Potion {
         if (e.world.isRemote) return;
         PotionEffect eff = e.getActivePotionEffect(this);
         if (eff != null) {
-            if (eff.getDuration() < 300) {
+            if (a < 2 && eff.getDuration() < 300) {
                 PotionEffect fresh = new PotionEffect(this, 32767, 0, false, false);
                 fresh.getCurativeItems().clear();
                 e.addPotionEffect(fresh);
             }
             if (!eff.getCurativeItems().isEmpty()) eff.getCurativeItems().clear();
         }
+        if (a >= 4) {
+            e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 60, 4, false, false));
+        }
     }
-    @Override public boolean isReady(int d, int a) { return d % 200 == 0; }
+    @Override public boolean isReady(int d, int a) { return a >= 2 ? d % 5 == 0 : d % 200 == 0; }
 
     @Override public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
         GlStateManager.enableBlend();

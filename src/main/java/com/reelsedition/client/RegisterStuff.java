@@ -22,7 +22,7 @@ public class RegisterStuff {
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENTRIFUGE_ELEMENT, 0, new ModelResourceLocation("reelsedition:fentrifuge_element", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.BUG, 0, new ModelResourceLocation("reelsedition:bug", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.ORBITOCLAST, 0, new ModelResourceLocation("reelsedition:orbitoclast", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(RegistryHandler.EUPHEMIUM_ORBITOCLAST, 0, new ModelResourceLocation("reelsedition:orbitoclast_euphemium", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.EUPHEMIUM_ORBITOCLAST, 0, new ModelResourceLocation("reelsedition:euphemium_orbitoclast", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.BUG_WAFER, 0, new ModelResourceLocation("reelsedition:bug_wafer", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.ZION_CIRCUIT, 0, new ModelResourceLocation("reelsedition:ziontech_circuit", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FLYOD_CIRCUIT, 0, new ModelResourceLocation("reelsedition:floydtech_circuit", "inventory"));

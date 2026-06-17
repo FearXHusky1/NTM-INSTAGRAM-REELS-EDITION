@@ -48,6 +48,14 @@ public class AddonFluidType extends FluidType {
         AddonFluids.metaOrderPointer.add(this);
     }
 
+    public void setDisplayName(String displayName) {
+        try {
+            java.lang.reflect.Field f = FluidType.class.getDeclaredField("localizedOverride");
+            f.setAccessible(true);
+            f.set(this, displayName);
+        } catch (Exception ignored) {}
+    }
+
     /// Copies traits of other fluid
     public void copyTraits(FluidType other,Function<FluidTrait,Boolean> copyFunction) {
         for (Entry<Class<? extends FluidTrait>,FluidTrait> entry : other.traits.entrySet()) {

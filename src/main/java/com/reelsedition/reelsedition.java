@@ -1,6 +1,7 @@
 package com.reelsedition;
 
 import com.hbm.world.biome.BiomeGenCraterBase;
+import com.reelsedition.contents.AddonFluids;
 import com.reelsedition.contents.machine.TileEntityFentReactor;
 import com.reelsedition.contents.recipes.AddonRecipes;
 import com.reelsedition.contents.registers.*;
@@ -75,10 +76,28 @@ public class reelsedition {
     public void postInit(FMLPostInitializationEvent e) {
         AddonRecipes.register();
 
+        //rad fentt
+        registerFluidHazard(AddonFluids.FENT_RAD, 50d);
+        registerFluidHazard(AddonFluids.FENT_SCHRAB, 350d);
+
         //droid spawn in crater
         addDroidSpawn(BiomeGenCraterBase.craterBiome);
         addDroidSpawn(BiomeGenCraterBase.craterInnerBiome);
         addDroidSpawn(BiomeGenCraterBase.craterOuterBiome);
+    }
+
+    private static void registerFluidHazard(com.hbm.inventory.fluid.FluidType ft, double rads) {
+        try {
+            net.minecraftforge.fluids.Fluid ff = ft.getFF();
+            if (ff == null) return;
+            String name = ff.getName();
+            it.unimi.dsi.fastutil.objects.ObjectArrayList<com.hbm.hazard.HazardEntry> list =
+                new it.unimi.dsi.fastutil.objects.ObjectArrayList<>();
+            list.add(new com.hbm.hazard.HazardEntry(com.hbm.hazard.HazardRegistry.RADIATION, rads));
+            com.hbm.hazard.transformer.HazardTransformerForgeFluid.FLUID_HAZARDS.put(name, list);
+        } catch (Exception ex) {
+            System.err.println("[G&G] Failed to register fluid hazard: " + ex.getMessage());
+        }
     }
 
     public static void registerSerializable() {

@@ -44,13 +44,31 @@ public class AddonFluids {
 	public static FluidType STEM_CELLS;
 	public static FluidType ZYKLON;
 
+	public static FluidType PIPERIDONE;
+	public static FluidType PROPIONYL_CHLORIDE;
+	public static FluidType FENTANYL_CRUDE;
+
 	public static void init() {
 		// Basic fluid and trait initialization (Don't code in custom traits here, i think it won't work)
 		FENT = new AddonFluidType("fent", 0x4CC2A2, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS);
-		FENT_RAD = new AddonFluidType("fent_radioactive", 0x00ffaa, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, new FT_VentRadiation(0.01f));
-		FENT_SCHRAB = new AddonFluidType("fent_schrabatic", 0x00d5ff, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, new FT_VentRadiation(0.08f));
+		FENT_RAD = new AddonFluidType("fent_radioactive", 0x00ffaa, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, new FT_VentRadiation(50f));
+		FENT_SCHRAB = new AddonFluidType("fent_schrabatic", 0x00d5ff, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, new FT_VentRadiation(350f));
 		BUG_PASTE = new AddonFluidType("bug_paste", 0x003d10, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, DELICIOUS);
 		STEM_CELLS = new AddonFluidType("stem_cells", 0xFFF7F7, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS);
+
+		//fent related
+		PIPERIDONE = new AddonFluidType("piperidone", 0xD4C856, 0, 1, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, new com.hbm.inventory.fluid.trait.FluidTraitSimple.FT_NoContainer());
+		PROPIONYL_CHLORIDE = new AddonFluidType("propionyl_chloride", 0xB5FFB5, 0, 0, 1, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, new com.hbm.inventory.fluid.trait.FluidTraitSimple.FT_NoContainer());
+		FENTANYL_CRUDE = new AddonFluidType("fentanyl_crude", 0x8B6914, 0, 1, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS, new com.hbm.inventory.fluid.trait.FluidTraitSimple.FT_NoContainer());
+
+		((AddonFluidType)FENT).setDisplayName("Fentanyl");
+		((AddonFluidType)FENT_RAD).setDisplayName("Radioactive Fentanyl");
+		((AddonFluidType)FENT_SCHRAB).setDisplayName("Schrabatic Fentanyl");
+		((AddonFluidType)BUG_PASTE).setDisplayName("Bug Paste");
+		((AddonFluidType)STEM_CELLS).setDisplayName("Stem Cells");
+		((AddonFluidType)PIPERIDONE).setDisplayName("Piperidone");
+		((AddonFluidType)PROPIONYL_CHLORIDE).setDisplayName("Propionyl Chloride");
+		((AddonFluidType)FENTANYL_CRUDE).setDisplayName("Crude Fentanyl");
 
 	//broken, leafia plz fix
 		//ZYKLON = new AddonFluidType("zyklon", 0xFFF7F7, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS, new FT_Toxin(new FT_Toxin.ToxinDirectDamage(ModDamageSource.cloud, 2F, 20, HazardClass.GAS_LUNG, false)));

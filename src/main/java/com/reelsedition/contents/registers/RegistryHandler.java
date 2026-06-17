@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.*;
 import net.minecraft.item.*;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.potion.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -38,6 +39,17 @@ import com.reelsedition.contents.events.RaidData;
 public class RegistryHandler {
 
     public static final Item PHONE = new Item().setTranslationKey(reelsedition.MODID + ".phone").setRegistryName("phone").setMaxStackSize(1);
+
+    public static final CreativeTabs TAB_REELS = new CreativeTabs("reelsedition") {
+        @Override public ItemStack createIcon() { return new ItemStack(PHONE); }
+        @Override public void displayAllRelevantItems(NonNullList<ItemStack> items) {
+            for (Item item : Item.REGISTRY) {
+                if (item.getRegistryName() != null && item.getRegistryName().getNamespace().equals("reelsedition")) {
+                    items.add(new ItemStack(item));
+                }
+            }
+        }
+    };
 
     public static final Item FENT_POWDER = new ItemFood(0, 0, false) {{
         setTranslationKey(reelsedition.MODID + ".fent_powder"); setRegistryName("fent_powder"); setAlwaysEdible();
@@ -97,35 +109,68 @@ public class RegistryHandler {
         }
     }.setTranslationKey(reelsedition.MODID + ".floydtech_circuit").setRegistryName("floydtech_circuit").setMaxStackSize(64);
     public static final Item ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".orbitoclast"); setRegistryName("orbitoclast"); setMaxStackSize(1); setFull3D();
-    } @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
+    } @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.add(TextFormatting.GRAY + "Quick DIY lobotomy, no medical license required :D");
+        tooltip.add(TextFormatting.GRAY + "What could go wrong?");
+    } @Override public EnumAction getItemUseAction(ItemStack stack) { return EnumAction.BOW; }
+    @Override public int getMaxItemUseDuration(ItemStack stack) { return 72000; }
+    @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
         if (!attacker.world.isRemote) {
             PotionEffect eff = new PotionEffect(LobotomisedEffect.INSTANCE, 32767, 0, false, false);
             eff.getCurativeItems().clear();
             target.addPotionEffect(eff);
             s.shrink(1);
         }
+        bloodEffect(target);
         return true;
     } @Override public ActionResult<ItemStack> onItemRightClick(World w, EntityPlayer p, EnumHand h) {
-        if (!w.isRemote) {
-            PotionEffect eff = new PotionEffect(LobotomisedEffect.INSTANCE, 32767, 0, false, false);
-            eff.getCurativeItems().clear();
-            p.addPotionEffect(eff);
-            p.getHeldItem(h).shrink(1);
-        }
+        p.setActiveHand(h);
         return new ActionResult<>(EnumActionResult.SUCCESS, p.getHeldItem(h));
+    } @Override public void onPlayerStoppedUsing(ItemStack stack, World w, EntityLivingBase entity, int timeLeft) {
+        if (!w.isRemote && entity instanceof EntityPlayer) {
+            if (this.getMaxItemUseDuration(stack) - timeLeft >= 20) {
+                PotionEffect eff = new PotionEffect(LobotomisedEffect.INSTANCE, 32767, 0, false, false);
+                eff.getCurativeItems().clear();
+                ((EntityPlayer) entity).addPotionEffect(eff);
+                stack.shrink(1);
+            }
+        }
+        if (entity instanceof EntityPlayer && this.getMaxItemUseDuration(stack) - timeLeft >= 20) {
+            bloodEffect(entity);
+        }
     }};
 
     public static final Item EUPHEMIUM_ORBITOCLAST = new Item() {{ setTranslationKey(reelsedition.MODID + ".euphemium_orbitoclast"); setRegistryName("euphemium_orbitoclast"); setMaxStackSize(1); setFull3D();
-    } @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
+    } @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.add(TextFormatting.GRAY + "Euphemium-plated for a premium lobotomy!");
+        tooltip.add(TextFormatting.RED + "Completely permanent, handle with care");
+    } @Override public EnumAction getItemUseAction(ItemStack stack) { return EnumAction.BOW; }
+    @Override public int getMaxItemUseDuration(ItemStack stack) { return 72000; }
+    @Override public boolean hitEntity(ItemStack s, EntityLivingBase target, EntityLivingBase attacker) {
         if (!attacker.world.isRemote) {
             if (target instanceof EntityPlayer) EuphemiumLobotomy.mark((EntityPlayer) target);
             else { PotionEffect eff = new PotionEffect(LobotomisedEffect.INSTANCE, 32767, 0, false, false); eff.getCurativeItems().clear(); target.addPotionEffect(eff); }
             s.shrink(1);
         }
+        bloodEffect(target);
         return true;
     } @Override public ActionResult<ItemStack> onItemRightClick(World w, EntityPlayer p, EnumHand h) {
-        if (!w.isRemote) { EuphemiumLobotomy.mark(p); p.getHeldItem(h).shrink(1); }
+        p.setActiveHand(h);
         return new ActionResult<>(EnumActionResult.SUCCESS, p.getHeldItem(h));
+    } @Override public void onPlayerStoppedUsing(ItemStack stack, World w, EntityLivingBase entity, int timeLeft) {
+        if (!w.isRemote && entity instanceof EntityPlayer) {
+            if (this.getMaxItemUseDuration(stack) - timeLeft >= 20) {
+                EuphemiumLobotomy.mark((EntityPlayer) entity);
+                stack.shrink(1);
+            }
+        }
+        if (entity instanceof EntityPlayer && this.getMaxItemUseDuration(stack) - timeLeft >= 20) {
+            bloodEffect(entity);
+        }
     }};
 
 
@@ -268,6 +313,22 @@ public class RegistryHandler {
 
         if (player instanceof EntityPlayerMP) {
             currentRaid.addPlayer((EntityPlayerMP) player);
+        }
+    }
+
+    private static void bloodEffect(EntityLivingBase entity) {
+        World w = entity.world;
+        if (!w.isRemote) {
+            w.playSound(null, entity.posX, entity.posY, entity.posZ,
+                    com.hbm.lib.HBMSoundHandler.blood_splat, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        }
+        for (int i = 0; i < 30; i++) {
+            double dx = (w.rand.nextDouble() - 0.5) * 0.8;
+            double dy = w.rand.nextDouble() * 0.5 + 0.3;
+            double dz = (w.rand.nextDouble() - 0.5) * 0.8;
+            w.spawnParticle(EnumParticleTypes.REDSTONE,
+                    entity.posX + dx, entity.posY + entity.height * 0.6 + dy, entity.posZ + dz,
+                    0.8, 0.0, 0.0);
         }
     }
 

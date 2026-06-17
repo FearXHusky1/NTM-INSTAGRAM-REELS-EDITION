@@ -1,0 +1,13 @@
+{
+  "parent": "item/generated",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [ 45, 0, 0 ],
+      "translation": [ 0, 4, 4 ],
+      "scale": [ 1.2, 1.2, 1.2 ]
+    }
+  },
+  "textures": {
+    "layer0": "reelsedition:items/orbitoclast_euphemium"
+  }
+}

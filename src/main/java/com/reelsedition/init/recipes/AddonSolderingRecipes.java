@@ -60,6 +60,27 @@ public class AddonSolderingRecipes {
                 },
                 new AStack[] {new ComparableStack(RegistryHandler.FENT_LACED_COPPER_WIRE, 12)}
         ));
+        recipes.add(new SolderingRecipe(
+                new ItemStack(RegistryHandler.FLYOD_CIRCUIT),
+
+                700,
+                50000,
+                new FluidStack(AddonFluids.FENT_SCHRAB, 500),
+                new AStack[]{
+                        new ComparableStack(ModItems.circuit, 4, EnumCircuitType.BISMOID),
+                        new ComparableStack(ModItems.circuit, 2, EnumCircuitType.QUANTUM),
+                        new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CONTROLLER_ADVANCED),
+                },
+                new AStack[]{
+                        new ComparableStack(ModItems.circuit, 64, EnumCircuitType.PCB),
+                        new ComparableStack(ModItems.ingot_euphemium, 4),
+                        new ComparableStack(ModItems.plate_euphemium, 2),
+                },
+                new AStack[]{
+                        new ComparableStack(ModItems.ingot_schrabidium, 4),
+                        new ComparableStack(RegistryHandler.FENT_LACED_COPPER_WIRE, 64),
+                }
+        ));
 
     }
 }

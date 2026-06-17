@@ -6,7 +6,7 @@ import com.hbm.blocks.ILookOverlay;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
+import com.reelsedition.contents.registers.RegistryHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +23,7 @@ public class BlockFentReactor extends BlockContainer implements ILookOverlay {
         super(m);
         setTranslationKey(reelsedition.MODID + "." + n);
         setRegistryName("reelsedition", n); // changed
-        setCreativeTab(CreativeTabs.MISC);
+        setCreativeTab(RegistryHandler.TAB_REELS);
         AddonBlocks.ALL_BLOCKS.add(this);
     }
     @Override public TileEntity createNewTileEntity(World w, int meta) { return new TileEntityFentReactor(); }
