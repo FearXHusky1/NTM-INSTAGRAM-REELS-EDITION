@@ -1,7 +1,9 @@
 package com.reelsedition;
 
 import com.hbm.world.biome.BiomeGenCraterBase;
+import com.reelsedition.block.BlockBobbleAddon;
 import com.reelsedition.contents.AddonFluids;
+import com.reelsedition.contents.machine.BlockStorageCrateAddon;
 import com.reelsedition.contents.machine.TileEntityFentReactor;
 import com.reelsedition.contents.recipes.AddonRecipes;
 import com.reelsedition.contents.registers.*;
@@ -12,6 +14,8 @@ import com.reelsedition.init.recipes.AddonMixerRecipes;
 import com.reelsedition.init.recipes.AddonSolderingRecipes;
 import com.reelsedition.proxy.CommonProxy;
 import com.reelsedition.init.recipes.AddonCompressorRecipes;
+import com.reelsedition.tileentity.TileEntityCrateAddon;
+import net.minecraft.block.material.Material;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -24,11 +28,14 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static com.reelsedition.contents.registers.AddonBlocks.ALL_BLOCKS;
+import static com.reelsedition.contents.registers.AddonBlocks.crate_addon;
+
 @Mod(modid = reelsedition.MODID, name = reelsedition.NAME, version = reelsedition.VERSION, dependencies = "required-after:hbm")
 public class reelsedition {
 
     public static final String MODID = "reelsedition";
-    public static final String NAME = "G&G's Instagram Reels Addon";
+    public static final String NAME = "Instagram Reels Edition";
     public static final String VERSION = "1.0.0";
 
     @SidedProxy(
@@ -48,7 +55,7 @@ public class reelsedition {
         proxy.preInit(e);
         AddonFluidTraits.preInit();
         GameRegistry.registerTileEntity(TileEntityFentReactor.class, "reelsedition:fent_reactor");
-
+        GameRegistry.registerTileEntity(TileEntityCrateAddon.class, "reelsedition:crate_addon");
         CyberneticEventHandler.registerCapability();
 
 
@@ -57,7 +64,7 @@ public class reelsedition {
 
     @EventHandler
     public void init(FMLInitializationEvent e) {
-
+        AddonBlocks.init();
     }
     //telaviv magic
 

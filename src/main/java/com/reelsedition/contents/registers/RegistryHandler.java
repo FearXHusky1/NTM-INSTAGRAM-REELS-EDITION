@@ -1,5 +1,8 @@
 package com.reelsedition.contents.registers;
 
+import com.hbm.items.block.ItemBlockStorageCrate;
+import com.hbm.items.special.ItemModRecord;
+import com.hbm.lib.HBMSoundHandler;
 import com.reelsedition.contents.registers.entity.Dresden;
 import com.reelsedition.contents.registers.entity.YN;
 import net.minecraft.block.Block;
@@ -37,8 +40,20 @@ import com.reelsedition.contents.events.RaidData;
 
 @Mod.EventBusSubscriber(modid = reelsedition.MODID)
 public class RegistryHandler {
+    public static final SoundEvent HHSound = new SoundEvent(new ResourceLocation("reelsedition", "hh")).setRegistryName(new ResourceLocation("reelsedition", "hh"));
+    public static final Item HH = new ItemModRecord("HH",HHSound, "HH") {}.setCreativeTab(CreativeTabs.MISC);
+
 
     public static final Item PHONE = new Item().setTranslationKey(reelsedition.MODID + ".phone").setRegistryName("phone").setMaxStackSize(1);
+
+    public static final Item FLAG = new Item()
+    {
+        @Override
+        public int getItemBurnTime(ItemStack itemStack) {
+            return 2000;
+        }
+    }.setTranslationKey(reelsedition.MODID + ".trans_flag").setRegistryName("trans_flag").setMaxStackSize(64).setCreativeTab(CreativeTabs.MISC);;
+
 
     public static final CreativeTabs TAB_REELS = new CreativeTabs("reelsedition") {
         @Override public ItemStack createIcon() { return new ItemStack(PHONE); }
@@ -99,8 +114,7 @@ public class RegistryHandler {
         }
     }.setTranslationKey(reelsedition.MODID + ".ziontech_circuit").setRegistryName("ziontech_circuit").setMaxStackSize(64);
     public static final Item FLYOD_CIRCUIT = new Item() {
-        @Override
-        @SideOnly(Side.CLIENT)
+
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             tooltip.add(TextFormatting.GRAY + "'This is our only solution");
             tooltip.add(TextFormatting.GRAY + "to solving the fentanyl crisis");
@@ -184,18 +198,50 @@ public class RegistryHandler {
         }
     }
 
-    @SubscribeEvent public static void registerItems(RegistryEvent.Register<Item> e) {
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> e) {
         for (Block b : AddonBlocks.ALL_BLOCKS) {
-            ItemBlock ib = b == AddonBlocks.fent_reactor ? new ItemBlock(b) {
-                @Override public void addInformation(ItemStack s, net.minecraft.world.World w, java.util.List<String> t, net.minecraft.client.util.ITooltipFlag f) {
-                    t.add(TextFormatting.GRAY + "Converts pure fentanyl into HE through");
-                    t.add(TextFormatting.GRAY + "the power of bullshit and centrifental force");
-                }
-            } : new ItemBlock(b);
-            ib.setRegistryName(b.getRegistryName()); e.getRegistry().register(ib);
+            ItemBlock ib = new ItemBlock(b);
+            if (b == AddonBlocks.fent_reactor) {
+                ib = tooltipItemBlock(b,
+                        "Converts pure fentanyl into HE through",
+                        "the power of bullshit and centrifugal force"
+                );
+                ib.setRegistryName(b.getRegistryName());
+            } else if (b == AddonBlocks.crate_addon) {
+                ib = new ItemBlockStorageCrate(b, b.getRegistryName()); // already sets its own registry name
+            } else {
+                ib.setRegistryName(b.getRegistryName());
+            }
+            e.getRegistry().register(ib);
         }
-        e.getRegistry().register(PHONE); e.getRegistry().register(FENT_POWDER); e.getRegistry().register(WHITE_CREATURE); e.getRegistry().register(FENTRIFUGE_ELEMENT); e.getRegistry().register(BUG); e.getRegistry().register(ORBITOCLAST); e.getRegistry().register(EUPHEMIUM_ORBITOCLAST); e.getRegistry().register(ZION_CIRCUIT);e.getRegistry().register(BUG_WAFER);e.getRegistry().register(FLYOD_CIRCUIT
-        ); e.getRegistry().register(FENT_LACED_COPPER_WIRE);e.getRegistry().register(MIXTAPE);
+
+
+
+        e.getRegistry().register(PHONE);
+        e.getRegistry().register(FENT_POWDER);
+        e.getRegistry().register(WHITE_CREATURE);
+        e.getRegistry().register(FENTRIFUGE_ELEMENT);
+        e.getRegistry().register(BUG);
+        e.getRegistry().register(ORBITOCLAST);
+        e.getRegistry().register(EUPHEMIUM_ORBITOCLAST);
+        e.getRegistry().register(ZION_CIRCUIT);
+        e.getRegistry().register(BUG_WAFER);
+        e.getRegistry().register(FLYOD_CIRCUIT);
+        e.getRegistry().register(FENT_LACED_COPPER_WIRE);
+        e.getRegistry().register(MIXTAPE);
+        e.getRegistry().register(FLAG);
+    }
+
+    private static ItemBlock tooltipItemBlock(Block b, String... lines) {
+        return new ItemBlock(b) {
+            @Override
+            public void addInformation(ItemStack s, net.minecraft.world.World w, java.util.List<String> t, net.minecraft.client.util.ITooltipFlag f) {
+                for (String line : lines) {
+                    t.add(TextFormatting.GRAY + line);
+                }
+            }
+        };
     }
     @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); e.getRegistry().register(LobotomisedEffect.INSTANCE); }
     @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); e.getRegistry().register(HWAA); e.getRegistry().register(HWAA_HIGH); }
@@ -267,10 +313,7 @@ public class RegistryHandler {
 
             if (!world.isRemote) {
                 startRaid(world, player);
-
-                if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
-                }
             }
 
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
@@ -303,7 +346,7 @@ public class RegistryHandler {
                     rand.nextFloat() * 360F,
                     0F
             );
-
+            yn.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(yn)), null);
             world.spawnEntity(yn);
 
             currentRaid.addRaider(yn);
