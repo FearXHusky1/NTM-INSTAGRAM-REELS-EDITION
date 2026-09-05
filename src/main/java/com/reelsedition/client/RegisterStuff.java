@@ -36,7 +36,8 @@ public class RegisterStuff {
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FLYOD_CIRCUIT, 0, new ModelResourceLocation("reelsedition:floydtech_circuit", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.FENT_LACED_COPPER_WIRE, 0, new ModelResourceLocation("reelsedition:fent_laced_copper_wire", "inventory"));
         ModelLoader.setCustomModelResourceLocation(RegistryHandler.MIXTAPE, 0, new ModelResourceLocation("reelsedition:mixtape", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(RegistryHandler.FLAG, 0, new ModelResourceLocation("reelsedition:trans_flag", "inventory"));
+       // ModelLoader.setCustomModelResourceLocation(RegistryHandler.FLAG, 0, new ModelResourceLocation("reelsedition:trans_flag", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(RegistryHandler.VACCINE, 0, new ModelResourceLocation("reelsedition:vaccine", "inventory"));
 
         registerRenderers();
     }

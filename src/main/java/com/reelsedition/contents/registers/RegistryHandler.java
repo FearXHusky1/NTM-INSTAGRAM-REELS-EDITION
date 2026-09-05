@@ -3,7 +3,10 @@ package com.reelsedition.contents.registers;
 import com.hbm.items.block.ItemBlockStorageCrate;
 import com.hbm.items.special.ItemModRecord;
 import com.hbm.lib.HBMSoundHandler;
+import com.reelsedition.contents.effects.vaccine.Vaccinated;
+import com.reelsedition.contents.effects.vaccine.VaccinatedEffect;
 import com.reelsedition.contents.registers.entity.Dresden;
+import com.reelsedition.contents.registers.entity.Fauci;
 import com.reelsedition.contents.registers.entity.YN;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
@@ -45,18 +48,34 @@ public class RegistryHandler {
 
 
     public static final Item PHONE = new Item().setTranslationKey(reelsedition.MODID + ".phone").setRegistryName("phone").setMaxStackSize(1);
-
-    public static final Item FLAG = new Item()
-    {
-        @Override
-        public int getItemBurnTime(ItemStack itemStack) {
-            return 2000;
+    public static final Item VACCINE = new ItemFood(0, 0, false) {
+        {
+            setTranslationKey(reelsedition.MODID + ".vaccine");
+            setRegistryName("vaccine");
+            setAlwaysEdible();
         }
-    }.setTranslationKey(reelsedition.MODID + ".trans_flag").setRegistryName("trans_flag").setMaxStackSize(64).setCreativeTab(CreativeTabs.MISC);;
+        @Override
+        public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+            ItemStack itemstack = playerIn.getHeldItem(handIn);
+            playerIn.setActiveHand(handIn);
+            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+        }
+        @Override
+        protected void onFoodEaten(ItemStack stack, World worldIn, EntityPlayer player) {
+            if (!worldIn.isRemote) {
+                Vaccinated.mark(player);
+                PotionEffect eff = new PotionEffect(VaccinatedEffect.INSTANCE, Integer.MAX_VALUE, 0, false, false);
+                eff.setPotionDurationMax(true);
+                eff.getCurativeItems().clear();
+                player.addPotionEffect(eff);
+            }
+        }
+    };
+
 
 
     public static final CreativeTabs TAB_REELS = new CreativeTabs("reelsedition") {
-        @Override public ItemStack createIcon() { return new ItemStack(PHONE); }
+        @Override public ItemStack createIcon() { return new ItemStack(RegistryHandler.PHONE); }
         @Override public void displayAllRelevantItems(NonNullList<ItemStack> items) {
             for (Item item : Item.REGISTRY) {
                 if (item.getRegistryName() != null && item.getRegistryName().getNamespace().equals("reelsedition")) {
@@ -230,7 +249,8 @@ public class RegistryHandler {
         e.getRegistry().register(FLYOD_CIRCUIT);
         e.getRegistry().register(FENT_LACED_COPPER_WIRE);
         e.getRegistry().register(MIXTAPE);
-        e.getRegistry().register(FLAG);
+        ///e.getRegistry().register(FLAG);
+        e.getRegistry().register(VACCINE);
     }
 
     private static ItemBlock tooltipItemBlock(Block b, String... lines) {
@@ -243,7 +263,7 @@ public class RegistryHandler {
             }
         };
     }
-    @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); e.getRegistry().register(LobotomisedEffect.INSTANCE); }
+    @SubscribeEvent public static void registerPotions(RegistryEvent.Register<Potion> e) { e.getRegistry().register(CommunismEffect.INSTANCE); e.getRegistry().register(LobotomisedEffect.INSTANCE); e.getRegistry().register(VaccinatedEffect.INSTANCE); }
     @SubscribeEvent public static void registerSounds(RegistryEvent.Register<SoundEvent> e) { e.getRegistry().register(RUSIA); e.getRegistry().register(HWAA); e.getRegistry().register(HWAA_HIGH); }
 
 
@@ -284,6 +304,15 @@ public class RegistryHandler {
                         .id(new ResourceLocation("reelsedition", "dresden"), 3)
                         .name("dresden")
                         .tracker(80, 3, true)
+                        .build()
+        );
+        event.getRegistry().register(
+                EntityEntryBuilder.create()
+                        .entity(Fauci.class)
+                        .id(new ResourceLocation("reelsedition", "fauci_skin"), 2)
+                        .name("dr.fauci")
+                        .tracker(80, 3, true)
+                        .egg(0x1a1a3e, 0xff0000)
                         .build()
         );
     }
